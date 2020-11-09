@@ -1,0 +1,126 @@
+-----------------------------------------------------------------------------
+-- 读取本地表工具
+-- 已经修改为通过lua table的方式读取表格内容
+-- 以kay-value的形式读取lua table，在cpu: i5-4590的设备上的性能为读取1亿次需要0.25秒左右
+--
+-----------------------------------------------------------------------------
+local tableTool = {}
+
+local insert = table.insert
+--===========================================================================
+
+---根据ID获取一行数据
+local function GetRow(self, id)
+    return self.Data[id]
+end
+
+---选择一行数据
+---@param key 字段名
+---@param value 数据
+local function SelectRow(self, key, value)
+    local index = self.Var[key]
+    if index then
+        for k, v in pairs(self.Data) do
+            if v[index] == value then
+                return v
+            end
+        end
+    end
+    return nil
+end
+---选择多行数据
+---@param key 字段名
+---@param value 数据
+local function SelectRows(self, key, value)
+    local index = self.Var[key]
+    local Table = {}
+    if index then
+        for k, v in pairs(self.Data) do
+            if v[index] == value then
+                table.insert(Table, v)
+            end
+        end
+        return Table
+    else
+        error("Error! TestTable中 字段:" .. key .. "不存在")
+    end
+    return Table
+end
+---根据方法选择多行数据
+---@param func 方法
+local function SelectRowsByFunc(self, func)
+    local Table = {}
+    if func and type(func) == "function" then
+        for k, v in pairs(self.Data) do
+            if func(v) then
+                insert(Table, v)
+            end
+        end
+    end
+    return Table
+end
+
+--- 获取列索引
+local function GetVariables(self)
+    return self.Variable
+end
+---初始化表格数据
+local function Init(configTable, func)
+    if type(func) ~= "function" then
+        func = nil
+    end
+    local mt = {
+        __var = configTable.Variable,
+        __index = function(t, k)
+            local temp = getmetatable(t)
+            return rawget(t, temp.__var[k])
+        end,
+        __newindex = function(t, k, v)
+            if t[k] ~= nil then
+                error("已有字段无法更改!")
+            else
+                rawset(t, k, v)
+            end
+        end
+    }
+    for k, v in pairs(configTable.Data) do
+        setmetatable(v, mt)
+        if func then
+            func(v)
+        end
+    end
+
+    table.sort(configTable.Data, function ( A, B )
+        if type(A[1]) == "number" and type(B[1]) == "number" then
+            if A[1] < B[1] then
+                return true
+            end
+        end
+        return false
+    end)
+end
+---初始化表
+---@param configTable 对应的luaTable
+---@param func 第一次初始化需要进行二次操作的方法
+local function InitTable(configTable, func)
+    configTable.GetRow = GetRow
+    configTable.SelectRow = SelectRow
+    configTable.SelectRows = SelectRows
+    configTable.SelectRowsByFunc = SelectRowsByFunc
+    configTable.GetVariables = GetVariables
+    Init(configTable, func)
+    local configMT = {
+        __newindex = function()
+            error("配置表为只读文件")
+        end
+    }
+    setmetatable(configTable, configMT)
+end
+
+---加载表格
+function tableTool.Init()
+    --InitTable(TestTable)
+    --加载表格
+end
+
+return tableTool

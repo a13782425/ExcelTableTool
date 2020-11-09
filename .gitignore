@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+*.user
+
+.vs
+[Bb]in
+[Oo]bj
