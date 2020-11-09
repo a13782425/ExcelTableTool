@@ -59,7 +59,19 @@ namespace TableTool.Format
                                 }
                                 foreach (PropertyDto propertyDto in item.PropertyDtoList)
                                 {
-                                    string value = ((nextRow5.GetCell(propertyDto.Index) == null) ? null : nextRow5.GetCell(propertyDto.Index).ToString());
+                                    ICell cell = nextRow5.GetCell(propertyDto.Index);
+                                    string value = null;
+                                    if (cell != null)
+                                    {
+                                        if (cell.CellType == CellType.Formula)
+                                        {
+                                            value = cell.StringCellValue;
+                                        }
+                                        else
+                                        {
+                                            value = cell.ToString();
+                                        }
+                                    }
                                     if (!TypeParse.Parse(value, propertyDto, binaryWriter))
                                     {
                                         throw new Exception($"{item.ExcelFileName}表中{ item.TableSheetName}页签,第{item.Helper.Index}行中，{propertyDto.PropertyName}序列化失败，错误类型为:{propertyDto.PropertyType}，请查看");

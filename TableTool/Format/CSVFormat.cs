@@ -71,7 +71,19 @@ namespace TableTool.Format
                                 for (int i = 0; i < item.PropertyDtoList.Count; i++)
                                 {
                                     PropertyDto propertyDto = item.PropertyDtoList[i];
-                                    string value = ((nextRow5.GetCell(propertyDto.Index) == null) ? null : nextRow5.GetCell(propertyDto.Index).ToString());
+                                    ICell cell = nextRow5.GetCell(propertyDto.Index);
+                                    string value = null;
+                                    if (cell != null)
+                                    {
+                                        if (cell.CellType == CellType.Formula)
+                                        {
+                                            value = cell.StringCellValue;
+                                        }
+                                        else
+                                        {
+                                            value = cell.ToString();
+                                        }
+                                    }
                                     res += value;
                                     if (i != item.PropertyDtoList.Count - 1)
                                     {

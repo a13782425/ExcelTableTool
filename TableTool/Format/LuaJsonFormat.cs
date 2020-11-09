@@ -60,7 +60,19 @@ namespace TableTool.Format
                                 var obj = (IDictionary<String, Object>)dy;
                                 foreach (PropertyDto propertyDto in item.PropertyDtoList)
                                 {
-                                    string value = ((nextRow5.GetCell(propertyDto.Index) == null) ? null : nextRow5.GetCell(propertyDto.Index).ToString());
+                                    ICell cell = nextRow5.GetCell(propertyDto.Index);
+                                    string value = null;
+                                    if (cell != null)
+                                    {
+                                        if (cell.CellType == CellType.Formula)
+                                        {
+                                            value = cell.StringCellValue;
+                                        }
+                                        else
+                                        {
+                                            value = cell.ToString();
+                                        }
+                                    }
                                     object res = null;
                                     if (!TypeParse.Parse(value, propertyDto, out res))
                                     {

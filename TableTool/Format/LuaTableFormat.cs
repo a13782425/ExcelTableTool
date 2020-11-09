@@ -85,7 +85,19 @@ namespace TableTool.Format
                                 for (int i = 0; i < item.PropertyDtoList.Count; i++)
                                 {
                                     PropertyDto propertyDto = item.PropertyDtoList[i];
-                                    string value = ((nextRow5.GetCell(propertyDto.Index) == null) ? null : nextRow5.GetCell(propertyDto.Index).ToString());
+                                    ICell cell = nextRow5.GetCell(propertyDto.Index);
+                                    string value = null;
+                                    if (cell != null)
+                                    {
+                                        if (cell.CellType == CellType.Formula)
+                                        {
+                                            value = cell.StringCellValue;
+                                        }
+                                        else
+                                        {
+                                            value = cell.ToString();
+                                        }
+                                    }
                                     object res = null;
                                     if (!TypeParse.Parse(value, propertyDto, out res))
                                     {
@@ -113,7 +125,7 @@ namespace TableTool.Format
                         sb.AppendLine($"config.Length = {length}");
                         sb.AppendLine(dataSb.ToString());
                         sb.AppendLine("return config");
-                        File.WriteAllText(Path.Combine(Params[CONSOLE_OUT_PATH], "Table_" + item.DataFileName), sb.ToString(), new UTF8Encoding());
+                        File.WriteAllText(Path.Combine(Params[CONSOLE_OUT_PATH], "table_" + item.DataFileName), sb.ToString(), new UTF8Encoding());
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.WriteLine($"生成:{item.TableSheetName}成功");
                     }
