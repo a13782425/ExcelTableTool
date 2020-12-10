@@ -32,7 +32,7 @@ namespace TableTool.GenerateCode
                     codeSB.AppendLine(packageName);
                     codeSB.AppendLine();
 
-                    className = System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(className) + "Conf";
+                    className = className.ToUpperFirst() + "Conf";
                     codeSB.AppendLine($"public class {className} {{");
                     StringBuilder fieldSB = new StringBuilder();
                     StringBuilder funcSB = new StringBuilder();
