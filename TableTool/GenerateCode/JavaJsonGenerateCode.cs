@@ -41,7 +41,7 @@ namespace TableTool.GenerateCode
                     {
                         string typeName = GetTypeName(propertyDto.PropertyType);
                         string fieldName = Params[CONSOLE_HUMP] == null ? propertyDto.PropertyName : propertyDto.TranName;
-                        string funcFieldName = System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(fieldName);
+                        string funcFieldName = fieldName.ToUpperFirst();// System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(fieldName);
                         //for (int i = 0; i < fieldName.Length; i++)
                         //{
                         //    if (i == 0)

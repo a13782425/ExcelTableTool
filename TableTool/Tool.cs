@@ -11,6 +11,14 @@ namespace TableTool
 {
     public static class Tool
     {
+        public static unsafe string ToUpperFirst(this string str)
+        {
+            if (str == null) return null;
+            string temp = new string(str);
+            fixed (char* ptr = temp)
+                *ptr = char.ToUpper(*ptr);
+            return temp;
+        }
         /// <summary>
         /// 检测表格
         /// </summary>
