@@ -113,7 +113,7 @@ namespace TableTool
                         if (!flag)
                         {
                             Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine($"表格{xls.FileName}解析失败,请查看表格");
+                            Console.WriteLine($"表格{xls.FileName}中的{item.TableName}解析失败,请查看表格");
                             Console.ForegroundColor = ConsoleColor.White;
                         }
                         else
@@ -124,7 +124,7 @@ namespace TableTool
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"表格{xls.FileName}描述不完整，请检查前四行");
+                        Console.WriteLine($"表格{xls.FileName}中的{item.TableName}描述不完整，请检查前四行");
                         Console.ForegroundColor = ConsoleColor.White;
                     }
                 }
