@@ -47,7 +47,7 @@ namespace TableTool.GenerateCode
                         codeSB.AppendLine($"{placeholder}    /// <summary>");
                         codeSB.AppendLine($"{placeholder}    /// {propertyDto.Des}");
                         codeSB.AppendLine($"{placeholder}    /// </summary>");
-                        codeSB.AppendLine($"{placeholder}    public {GetTypeName(propertyDto.PropertyType)} {propertyDto.PropertyName} {{ get; private set; }}");
+                        codeSB.AppendLine($"{placeholder}    public {GetTypeName(propertyDto.PropertyType)} {(Params[CONSOLE_HUMP] == null ? propertyDto.PropertyName : propertyDto.TranName)} {{ get; private set; }}");
                     }
                     codeSB.AppendLine();
                     codeSB.AppendLine($"{placeholder}    internal IEnumerable<{className}> GetList(Func<{className}, bool> predicate)");
@@ -76,13 +76,14 @@ namespace TableTool.GenerateCode
                         //stringBuilder.AppendLine($"{placeholder}        this.{propertyDto.PropertyName } = ({propertyDto.PropertyType }){GetBinaryRead(propertyDto.PropertyType)};");
                         //    continue;
                         //}
-                        codeSB.AppendLine($"{placeholder}        this.{propertyDto.PropertyName} = {GetBinaryRead(propertyDto.PropertyType)};");
+                        string proName = Params[CONSOLE_HUMP] == null ? propertyDto.PropertyName : propertyDto.TranName;
+                        codeSB.AppendLine($"{placeholder}        this.{proName} = {GetBinaryRead(propertyDto.PropertyType)};");
                         if (propertyDto.IsArray)
                         {
                             string propertyType = propertyDto.PropertyType.Replace("[]", "");
-                            codeSB.AppendLine($"{placeholder}        for (int i = 0; i < this.{propertyDto.PropertyName}.Length; i++)");
+                            codeSB.AppendLine($"{placeholder}        for (int i = 0; i < this.{proName}.Length; i++)");
                             codeSB.AppendLine($"{placeholder}        {{");
-                            codeSB.AppendLine($"{placeholder}            this.{propertyDto.PropertyName}[i] = {GetBinaryRead(propertyType)};");
+                            codeSB.AppendLine($"{placeholder}            this.{proName}[i] = {GetBinaryRead(propertyType)};");
                             codeSB.AppendLine($"{placeholder}        }}");
                         }
                     }

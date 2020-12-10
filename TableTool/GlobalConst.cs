@@ -17,6 +17,7 @@ namespace TableTool
             Params.Add("extension", null);
             Params.Add("namespace", null);
             Params.Add("encrypt", null);
+            Params.Add("hump", null);
             Params.Add("allsheet", "1");
         }
         public static void ResetParams()
@@ -31,6 +32,7 @@ namespace TableTool
             Params.Add("extension", null);
             Params.Add("namespace", null);
             Params.Add("encrypt", null);
+            Params.Add("hump", null);
             Params.Add("allsheet", "1");
         }
         public static Dictionary<string, string> Params = new Dictionary<string, string>();
@@ -76,6 +78,10 @@ namespace TableTool
         /// 运行指令-全部sheet
         /// </summary>
         public const string CONSOLE_ALL_SHEET = "allsheet";
+        /// <summary>
+        /// 运行指令-是否驼峰
+        /// </summary>
+        public const string CONSOLE_HUMP = "hump";
         /// <summary>
         /// 运行指令-帮助
         /// </summary>

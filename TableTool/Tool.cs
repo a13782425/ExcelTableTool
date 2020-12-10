@@ -96,8 +96,9 @@ namespace TableTool
                                 GetTypeName(nextRow.GetCell(i).ToString(), ref dto);
                                 dto.Index = i;
                                 dto.Des = "";
-                                dto.Des = des.Replace("\n"," ");
+                                dto.Des = des.Replace("\n", " ");
                                 dto.PropertyName = nextRow4.GetCell(i).ToString();
+                                dto.TranName = TranHump(dto.PropertyName);
                                 tableDto.PropertyDtoList.Add(dto);
                             }
                         }
@@ -121,6 +122,25 @@ namespace TableTool
                 }
             }
             return true;
+        }
+        /// <summary>
+        /// 驼峰转化
+        /// </summary>
+        /// <param name="waitStr"></param>
+        /// <returns></returns>
+        internal static string TranHump(string waitStr)
+        {
+            string[] strItems = waitStr.Split('_');
+            string strItemTarget = strItems[0];
+            for (int j = 1; j < strItems.Length; j++)
+            {
+                string temp = strItems[j].ToString();
+                string temp1 = temp[0].ToString().ToUpper();
+                string temp2 = "";
+                temp2 = temp1 + temp.Remove(0, 1);
+                strItemTarget += temp2;
+            }
+            return strItemTarget;
         }
         /// <summary>
         /// 检测一下代码导出路径

@@ -2,7 +2,7 @@
   "profiles": {
     "TableTool": {
       "commandName": "Project",
-      "commandLineArgs": "platform=client excelPath=Table format=luatable outpath=luaTable extension=.b codetype=java codepath=csharp"
+      "commandLineArgs": "platform=client excelPath=Table format=luatable outpath=luaTable extension=.lua "
     }
   }
 }

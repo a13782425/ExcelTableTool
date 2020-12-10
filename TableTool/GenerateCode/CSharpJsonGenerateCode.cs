@@ -42,7 +42,7 @@ namespace TableTool.GenerateCode
                     foreach (var propertyDto in item.PropertyDtoList)
                     {
                         string typeName = GetTypeName(propertyDto.PropertyType);
-                        string fieldName = propertyDto.PropertyName;
+                        string fieldName = Params[CONSOLE_HUMP] == null ? propertyDto.PropertyName : propertyDto.TranName;
                         fieldSB.AppendLine($"{placeholder}    /// <summary>");
                         fieldSB.AppendLine($"{placeholder}    /// {propertyDto.Des}");
                         fieldSB.AppendLine($"{placeholder}    /// </summary>");

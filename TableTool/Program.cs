@@ -143,7 +143,9 @@ namespace TableTool
                     Console.ForegroundColor = ConsoleColor.White;
                 }
             }
-
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"生成成功,如需要关闭窗口,请输入exit或者关闭窗口");
+            Console.ForegroundColor = ConsoleColor.White;
         }
         private static void ShowHelp()
         {
@@ -155,6 +157,7 @@ namespace TableTool
             Console.WriteLine("outpath        -数据输出文件夹");
             Console.WriteLine("format         -数据输出文件格式(csv,json,byte,luatable,luajson)");
             Console.WriteLine("extension      -数据文件自定义后缀(.json,.csv,.byte等)");
+            Console.WriteLine("hump           -驼峰命名");
             Console.WriteLine("allsheet       -是否是全部sheet,1代表全部,其他代表名为data的Sheet或第一个Sheet");
             Console.WriteLine("codetype       -代码类型(java,csharp)");
             Console.WriteLine("codepath       -代码文件夹");

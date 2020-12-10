@@ -26,7 +26,7 @@ namespace TableTool.Format
                         for (int i = 0; i < item.PropertyDtoList.Count; i++)
                         {
                             PropertyDto propertyDto = item.PropertyDtoList[i];
-                            title += propertyDto.PropertyName;
+                            title += Params[CONSOLE_HUMP] == null ? propertyDto.PropertyName : propertyDto.TranName;
                             if (i != item.PropertyDtoList.Count - 1)
                             {
                                 title += "\t";

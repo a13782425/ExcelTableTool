@@ -78,7 +78,7 @@ namespace TableTool.Format
                                     {
                                         throw new Exception($"{item.ExcelFileName}表中{ item.TableSheetName}页签,第{item.Helper.Index}行中，{propertyDto.PropertyName}序列化失败，错误类型为:{propertyDto.PropertyType}，请查看");
                                     }
-                                    obj.Add(propertyDto.PropertyName, res);
+                                    obj.Add(Params[CONSOLE_HUMP] == null ? propertyDto.PropertyName : propertyDto.TranName, res);
                                 }
                                 list.Add(dy);
                             }

@@ -32,7 +32,7 @@ namespace TableTool.GenerateCode
                     codeSB.AppendLine(packageName);
                     codeSB.AppendLine();
 
-                    className = System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(className);
+                    className = System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(className) + "Conf";
                     codeSB.AppendLine($"public class {className} {{");
                     StringBuilder fieldSB = new StringBuilder();
                     StringBuilder funcSB = new StringBuilder();
@@ -40,8 +40,8 @@ namespace TableTool.GenerateCode
                     foreach (var propertyDto in item.PropertyDtoList)
                     {
                         string typeName = GetTypeName(propertyDto.PropertyType);
-                        string fieldName = propertyDto.PropertyName;
-                        string funcFieldName = System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(fieldName); 
+                        string fieldName = Params[CONSOLE_HUMP] == null ? propertyDto.PropertyName : propertyDto.TranName;
+                        string funcFieldName = System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(fieldName);
                         //for (int i = 0; i < fieldName.Length; i++)
                         //{
                         //    if (i == 0)
@@ -53,6 +53,9 @@ namespace TableTool.GenerateCode
                         //        funcFieldName += fieldName[i];
                         //    }
                         //}
+                        fieldSB.AppendLine($"	/**");
+                        fieldSB.AppendLine($"	 * {propertyDto.Des}");
+                        fieldSB.AppendLine($"	 */");
                         fieldSB.AppendLine($"    private {typeName} {fieldName};");
                         funcSB.AppendLine($"	/**");
                         funcSB.AppendLine($"	 * {propertyDto.Des}");
@@ -81,7 +84,7 @@ namespace TableTool.GenerateCode
                     codeSB.Append(funcSB.ToString());
                     codeSB.AppendLine($"}}");
 
-                    File.WriteAllText(Path.Combine(Params[CONSOLE_CODE_PATH], item.TableSheetName + ".gen.java"), codeSB.ToString(), new UTF8Encoding());
+                    File.WriteAllText(Path.Combine(Params[CONSOLE_CODE_PATH], className + ".java"), codeSB.ToString(), new UTF8Encoding());
                     Console.WriteLine($"生成Java代码:{item.TableSheetName}成功");
                 }
             }
