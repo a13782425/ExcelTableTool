@@ -35,12 +35,12 @@ namespace TableTool.Format
                             if (i != item.PropertyDtoList.Count - 1)
                             {
                                 sb.AppendLine($"    --- {propertyDto.Des},");
-                                sb.AppendLine($"    {(Params[CONSOLE_HUMP] == null ? propertyDto.PropertyName : propertyDto.TranName)} = {propertyDto.Index},");
+                                sb.AppendLine($"    {(Params[CONSOLE_HUMP] == null ? propertyDto.PropertyName : propertyDto.TranName)} = {propertyDto.LuaIndex},");
                             }
                             else
                             {
                                 sb.AppendLine($"    --- {propertyDto.Des},");
-                                sb.AppendLine($"    {(Params[CONSOLE_HUMP] == null ? propertyDto.PropertyName : propertyDto.TranName)} = {propertyDto.Index}");
+                                sb.AppendLine($"    {(Params[CONSOLE_HUMP] == null ? propertyDto.PropertyName : propertyDto.TranName)} = {propertyDto.LuaIndex}");
                             }
                         }
                         sb.AppendLine("}");

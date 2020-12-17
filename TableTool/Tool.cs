@@ -93,6 +93,7 @@ namespace TableTool
                     if (nextRow != null && nextRow2 != null && nextRow4 != null)
                     {
                         bool flag = false;
+                        int num = 1;
                         for (int i = 1; i < nextRow.LastCellNum && nextRow2.LastCellNum >= i && nextRow4.LastCellNum >= i; i++)
                         {
                             string a = nextRow2.GetCell(i).ToString().ToLower();
@@ -103,11 +104,13 @@ namespace TableTool
                                 PropertyDto dto = new PropertyDto();
                                 GetTypeName(nextRow.GetCell(i).ToString(), ref dto);
                                 dto.Index = i;
+                                dto.LuaIndex = num;
                                 dto.Des = "";
                                 dto.Des = des.Replace("\n", " ");
                                 dto.PropertyName = nextRow4.GetCell(i).ToString();
                                 dto.TranName = TranHump(dto.PropertyName);
                                 tableDto.PropertyDtoList.Add(dto);
+                                num++;
                             }
                         }
                         if (!flag)

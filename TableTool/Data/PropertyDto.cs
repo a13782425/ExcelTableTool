@@ -11,7 +11,10 @@ namespace TableTool
         /// </summary>
         public string TranName { get; set; }
         public int Index { get; set; }
-
+        /// <summary>
+        /// LuaË÷Òı
+        /// </summary>
+        public int LuaIndex { get; set; }
         public string PropertyType { get; set; }
 
         public string EnumType { get; set; }
