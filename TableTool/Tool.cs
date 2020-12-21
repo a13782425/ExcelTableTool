@@ -116,7 +116,7 @@ namespace TableTool
                         if (!flag)
                         {
                             Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine($"表格{xls.FileName}中的{item.TableName}解析失败,请查看表格");
+                            Console.WriteLine($"表格{xls.FileName}中的{item.TableName}没有当前平台所需要的数据");
                             Console.ForegroundColor = ConsoleColor.White;
                         }
                         else
