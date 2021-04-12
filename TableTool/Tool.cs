@@ -96,21 +96,31 @@ namespace TableTool
                         int num = 1;
                         for (int i = 1; i < nextRow.LastCellNum && nextRow2.LastCellNum >= i && nextRow4.LastCellNum >= i; i++)
                         {
-                            string a = nextRow2.GetCell(i).ToString().ToLower();
-                            string des = ((nextRow3.GetCell(i) == null) ? "" : nextRow3.GetCell(i).ToString());
-                            if (!(a != "both") || !(a != Params[CONSOLE_PLATFORM].ToLower()))
+                            try
                             {
-                                flag = true;
-                                PropertyDto dto = new PropertyDto();
-                                GetTypeName(nextRow.GetCell(i).ToString(), ref dto);
-                                dto.Index = i;
-                                dto.LuaIndex = num;
-                                dto.Des = "";
-                                dto.Des = des.Replace("\n", " ");
-                                dto.PropertyName = nextRow4.GetCell(i).ToString();
-                                dto.TranName = TranHump(dto.PropertyName);
-                                tableDto.PropertyDtoList.Add(dto);
-                                num++;
+                                string a = nextRow2.GetCell(i).ToString().ToLower();
+                                string des = ((nextRow3.GetCell(i) == null) ? "" : nextRow3.GetCell(i).ToString());
+                                if (!(a != "both") || !(a != Params[CONSOLE_PLATFORM].ToLower()))
+                                {
+                                    flag = true;
+                                    PropertyDto dto = new PropertyDto();
+                                    GetTypeName(nextRow.GetCell(i).ToString(), ref dto);
+                                    dto.Index = i;
+                                    dto.LuaIndex = num;
+                                    dto.Des = "";
+                                    dto.Des = des.Replace("\n", " ");
+                                    dto.PropertyName = nextRow4.GetCell(i).ToString();
+                                    dto.TranName = TranHump(dto.PropertyName);
+                                    tableDto.PropertyDtoList.Add(dto);
+                                    num++;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine($"表格{xls.FileName}中的{item.TableName}前四行第{i}列附近数据有异常");
+                                Console.ForegroundColor = ConsoleColor.White;
+                                return false;
                             }
                         }
                         if (!flag)
