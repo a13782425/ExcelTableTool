@@ -65,20 +65,20 @@ namespace TableTool
         {
             //if (string.IsNullOrWhiteSpace(value))
             //{
-            //	bw.Write(0);
-            //	return true;
+            //  bw.Write(0);
+            //  return true;
             //}
             //value = value.Replace("_", "");
             //if (int.TryParse(value, out var result))
             //{
-            //	bw.Write(result);
-            //	return true;
+            //  bw.Write(result);
+            //  return true;
             //}
             //if (!Program.EnumsTypeDic.ContainsKey(propertyType))
             //{
-            //	Console.WriteLine("所填写类型不存在，已使用默认值，请检查Enum是否生成");
-            //	bw.Write(0);
-            //	return true;
+            //  Console.WriteLine("所填写类型不存在，已使用默认值，请检查Enum是否生成");
+            //  bw.Write(0);
+            //  return true;
             //}
             //Type enumType = Program.EnumsTypeDic[propertyType];
             //object obj = Enum.Parse(enumType, value);
@@ -106,7 +106,7 @@ namespace TableTool
             }
             if (int.TryParse(value, out var result))
             {
-                bw.Write(result > 0);
+                bw.Write(result == 1);
                 return true;
             }
             return false;
@@ -121,7 +121,7 @@ namespace TableTool
             }
             if (int.TryParse(value, out var result))
             {
-                obj = result > 0;
+                obj = result == 1;
                 return true;
             }
             return false;
