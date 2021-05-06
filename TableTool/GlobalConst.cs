@@ -18,6 +18,7 @@ namespace TableTool
             Params.Add("namespace", null);
             Params.Add("encrypt", null);
             Params.Add("hump", null);
+            Params.Add("exit", "0");
             Params.Add("allsheet", "1");
         }
         public static void ResetParams()
@@ -33,6 +34,7 @@ namespace TableTool
             Params.Add("namespace", null);
             Params.Add("encrypt", null);
             Params.Add("hump", null);
+            Params.Add("exit", "0");
             Params.Add("allsheet", "1");
         }
         public static Dictionary<string, string> Params = new Dictionary<string, string>();
@@ -110,7 +112,6 @@ namespace TableTool
         /// 客户端
         /// </summary>
         public const string PLATFORM_SERVER = "server";
-
         /// <summary>
         /// 生成数据模型DTO
         /// </summary>

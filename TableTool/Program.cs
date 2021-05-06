@@ -28,25 +28,28 @@ namespace TableTool
                 GenerateTable();
                 ResetParams();
             }
-            while (true)
+            if (Params["exit"] == "0")
             {
-                string consoleText = Console.ReadLine();
-                string str = consoleText.ToLower();
-                switch (str)
+                while (true)
                 {
-                    case CONSOLE_EXIT:
-                        goto Exit;
-                    case CONSOLE_HELP:
-                    case CONSOLE_HELP2:
-                        ShowHelp();
-                        break;
-                    case CONSOLE_CLEAR:
-                    case CONSOLE_CLEAN:
-                        Console.Clear();
-                        break;
-                    default:
-                        ResolveConsoleText(consoleText);
-                        break;
+                    string consoleText = Console.ReadLine();
+                    string str = consoleText.ToLower();
+                    switch (str)
+                    {
+                        case CONSOLE_EXIT:
+                            goto Exit;
+                        case CONSOLE_HELP:
+                        case CONSOLE_HELP2:
+                            ShowHelp();
+                            break;
+                        case CONSOLE_CLEAR:
+                        case CONSOLE_CLEAN:
+                            Console.Clear();
+                            break;
+                        default:
+                            ResolveConsoleText(consoleText);
+                            break;
+                    }
                 }
             }
         Exit: Console.ForegroundColor = ConsoleColor.White;
