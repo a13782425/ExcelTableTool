@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Transactions;
 using TableTool.Format;
 using static TableTool.GlobalConst;
@@ -19,16 +20,18 @@ namespace TableTool
                 Console.ForegroundColor = ConsoleColor.White;
             }
             bool result = ResolveArgs(args);
+            string exit = "0";
             if (!result)
             {
                 ResetParams();
             }
             else
             {
+                exit = Params["exit"];
                 GenerateTable();
                 ResetParams();
             }
-            if (Params["exit"] == "0")
+            if (exit == "0")
             {
                 while (true)
                 {
@@ -54,6 +57,7 @@ namespace TableTool
             }
         Exit: Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("关闭中。。。");
+            Thread.Sleep(1000);
         }
 
         /// <summary>
