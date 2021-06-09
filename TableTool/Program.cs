@@ -172,7 +172,7 @@ namespace TableTool
             Console.WriteLine("encrypt        -简单加密字段(特殊需求)");
             Console.WriteLine("clear          -清理控制台");
             Console.WriteLine("clean          -清理控制台");
-            Console.WriteLine("exit           -退出");
+            Console.WriteLine("exit           -退出1=自动退出,0=手动推出");
         }
     }
 }
