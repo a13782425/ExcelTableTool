@@ -110,6 +110,10 @@ namespace TableTool
                                     dto.Des = "";
                                     dto.Des = des.Replace("\n", " ");
                                     dto.PropertyName = nextRow4.GetCell(i).ToString();
+                                    if (string.IsNullOrWhiteSpace(dto.PropertyName))
+                                    {
+                                        throw new Exception();
+                                    }
                                     dto.TranName = TranHump(dto.PropertyName);
                                     tableDto.PropertyDtoList.Add(dto);
                                     num++;
