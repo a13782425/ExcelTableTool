@@ -27,6 +27,12 @@ namespace TableTool.Format
                         sb.AppendLine("------------------------------------------------------------------------------------------------------------");
                         sb.AppendLine($"-------------------------------------------- generate file -------------------------------------------------");
                         sb.AppendLine("------------------------------------------------------------------------------------------------------------");
+                        sb.AppendLine($"---@class { "table_" + item.TableSheetName}");
+                        for (int i = 0; i < item.PropertyDtoList.Count; i++)
+                        {
+                            PropertyDto propertyDto = item.PropertyDtoList[i];
+                            sb.AppendLine($"---@field public {(Params[CONSOLE_HUMP] == null ? propertyDto.PropertyName : propertyDto.TranName)} {propertyDto.PropertyType} @{propertyDto.Des}");
+                        }
                         sb.AppendLine("local config = {}");
                         sb.AppendLine("config.Variable = {");
                         for (int i = 0; i < item.PropertyDtoList.Count; i++)
@@ -86,18 +92,7 @@ namespace TableTool.Format
                                 {
                                     PropertyDto propertyDto = item.PropertyDtoList[i];
                                     ICell cell = nextRow5.GetCell(propertyDto.Index);
-                                    string value = null;
-                                    if (cell != null)
-                                    {
-                                        if (cell.CellType == CellType.Formula)
-                                        {
-                                            value = cell.StringCellValue;
-                                        }
-                                        else
-                                        {
-                                            value = cell.ToString();
-                                        }
-                                    }
+                                    string value = ExcelHelper.GetCellValue(cell);
                                     object res = null;
                                     if (!TypeParse.Parse(value, propertyDto, out res))
                                     {

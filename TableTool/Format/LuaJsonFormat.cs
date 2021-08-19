@@ -61,18 +61,7 @@ namespace TableTool.Format
                                 foreach (PropertyDto propertyDto in item.PropertyDtoList)
                                 {
                                     ICell cell = nextRow5.GetCell(propertyDto.Index);
-                                    string value = null;
-                                    if (cell != null)
-                                    {
-                                        if (cell.CellType == CellType.Formula)
-                                        {
-                                            value = cell.StringCellValue;
-                                        }
-                                        else
-                                        {
-                                            value = cell.ToString();
-                                        }
-                                    }
+                                    string value = ExcelHelper.GetCellValue(cell);
                                     object res = null;
                                     if (!TypeParse.Parse(value, propertyDto, out res))
                                     {

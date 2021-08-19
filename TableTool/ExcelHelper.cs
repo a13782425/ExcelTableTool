@@ -27,6 +27,22 @@ namespace TableTool
             }
         }
 
+        public static string GetCellValue(ICell cell)
+        {
+            if (cell != null)
+            {
+                if (cell.CellType == CellType.Formula)
+                {
+                    cell.SetCellType(CellType.String);
+                    return cell.StringCellValue;
+                }
+                else
+                {
+                    return cell.ToString();
+                }
+            }
+            return "";
+        }
 
         public static List<ExcelHelper> GetAllHelper(string path)
         {
