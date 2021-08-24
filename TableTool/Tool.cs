@@ -2,28 +2,36 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
-using TableTool.Format;
-using TableTool.GenerateCode;
+using TableCore;
 using static TableTool.GlobalConst;
 
 namespace TableTool
 {
     public static class Tool
     {
-        public static unsafe string ToUpperFirst(this string str)
+        //public static unsafe string ToUpperFirst(this string str)
+        //{
+        //    if (str == null) return null;
+        //    string temp = new string(str);
+        //    fixed (char* ptr = temp)
+        //        *ptr = char.ToUpper(*ptr);
+        //    return temp;
+        //}
+
+        internal static void Init()
         {
-            if (str == null) return null;
-            string temp = new string(str);
-            fixed (char* ptr = temp)
-                *ptr = char.ToUpper(*ptr);
-            return temp;
+            LoadValueParse();
+            LoadPlugin();
         }
+
         /// <summary>
         /// 检测表格
         /// </summary>
         /// <returns></returns>
-        public static bool CheckExcel()
+        public static bool CheckExcel(GenerateDto generate)
         {
             if (string.IsNullOrWhiteSpace(Params[CONSOLE_EXCEL_PATH]))
             {
@@ -45,7 +53,7 @@ namespace TableTool
                         xlsDto.Path = path;
                         xlsDto.FileName = Path.GetFileNameWithoutExtension(fileName);
 
-                        Generate.XlsDtoList.Add(xlsDto);
+                        generate.XlsDtoList.Add(xlsDto);
                     }
                 }
                 return true;
@@ -63,15 +71,14 @@ namespace TableTool
         /// 解析excel表
         /// </summary>
         /// <returns></returns>
-        public static bool ResolveExcel()
+        public static bool ResolveExcel(GenerateDto generate)
         {
-            foreach (var xls in Generate.XlsDtoList)
+            foreach (var xls in generate.XlsDtoList)
             {
                 List<ExcelHelper> excelHelperList = ExcelHelper.GetAllHelper(xls.Path);
                 foreach (var item in excelHelperList)
                 {
                     TableDto tableDto = new TableDto();
-                    tableDto.Helper = item;
                     tableDto.ExcelFileName = xls.FileName;
                     if (string.IsNullOrWhiteSpace(item.TableName))
                     {
@@ -98,24 +105,37 @@ namespace TableTool
                         {
                             try
                             {
-                                string a = nextRow2.GetCell(i).ToString().ToLower();
+                                string platform = nextRow2.GetCell(i).ToString().ToLower();
                                 string des = ((nextRow3.GetCell(i) == null) ? "" : nextRow3.GetCell(i).ToString());
-                                if (!(a != "both") || !(a != Params[CONSOLE_PLATFORM].ToLower()))
+                                if (!(platform != "both") || !(platform != Params[CONSOLE_PLATFORM].ToLower()))
                                 {
                                     flag = true;
                                     PropertyDto dto = new PropertyDto();
-                                    GetTypeName(nextRow.GetCell(i).ToString(), ref dto);
+                                    dto.PropertyType = nextRow.GetCell(i).ToString();
                                     dto.Index = i;
-                                    dto.LuaIndex = num;
-                                    dto.Des = "";
+                                    dto.RealIndex = num;
                                     dto.Des = des.Replace("\n", " ");
                                     dto.PropertyName = nextRow4.GetCell(i).ToString();
                                     if (string.IsNullOrWhiteSpace(dto.PropertyName))
                                     {
-                                        throw new Exception();
+                                        Console.ForegroundColor = ConsoleColor.Red;
+                                        Console.WriteLine($"表格{xls.FileName}中的{item.TableName}第{i}列附近字段名为空");
+                                        Console.ForegroundColor = ConsoleColor.White;
+                                        return false;
                                     }
-                                    dto.TranName = TranHump(dto.PropertyName);
-                                    tableDto.PropertyDtoList.Add(dto);
+                                    if (!string.IsNullOrWhiteSpace(Params[CONSOLE_HUMP]))
+                                    {
+                                        //如果需要驼峰
+                                        dto.PropertyName = TranHump(dto.PropertyName);
+                                    }
+                                    if (tableDto.PropertyDic.ContainsKey(dto.PropertyName))
+                                    {
+                                        Console.ForegroundColor = ConsoleColor.Red;
+                                        Console.WriteLine($"表格{xls.FileName}中的{item.TableName}第{i}列附近字段名重复");
+                                        Console.ForegroundColor = ConsoleColor.White;
+                                        return false;
+                                    }
+                                    tableDto.PropertyDic.Add(dto.PropertyName, dto);
                                     num++;
                                 }
                             }
@@ -136,6 +156,8 @@ namespace TableTool
                         else
                         {
                             xls.TableDtos.Add(tableDto);
+                            if (!ResolveExcelData(item, tableDto))
+                                return false;
                         }
                     }
                     else
@@ -143,11 +165,75 @@ namespace TableTool
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"表格{xls.FileName}中的{item.TableName}描述不完整，请检查前四行");
                         Console.ForegroundColor = ConsoleColor.White;
+                        return false;
                     }
+
+
                 }
             }
             return true;
         }
+
+        private static bool ResolveExcelData(ExcelHelper excel, TableDto tableDto)
+        {
+            int num = 4;
+            try
+            {
+                List<string> keyList = new List<string>();
+                while (excel.HaveData())
+                {
+                    IRow row = excel.GetNextRow();
+                    num++;
+                    if (row == null)
+                    {
+                        Console.WriteLine($"{tableDto.ExcelFileName}表中{ tableDto.TableSheetName}页签,第:{excel.Index}行为空");
+                    }
+                    else
+                    {
+                        if (row.Count() < 2 || (row.GetCell(0) != null && row.GetCell(0).ToString() == "#"))
+                        {
+                            continue;
+                        }
+                        if (row.GetCell(1) == null)
+                        {
+                            throw new Exception($"{tableDto.ExcelFileName}表中{ tableDto.TableSheetName}页签,第:{excel.Index}行Id为空");
+                        }
+                        string text = row.GetCell(1).ToString();
+                        if (string.IsNullOrWhiteSpace(text))
+                        {
+                            throw new Exception($"{tableDto.ExcelFileName}表中{ tableDto.TableSheetName}页签,第:{excel.Index}行Id为空");
+                        }
+                        if (!keyList.Contains(text))
+                        {
+                            keyList.Add(text);
+                        }
+                        else
+                        {
+                            throw new Exception($"{tableDto.ExcelFileName}表中{ tableDto.TableSheetName}页签中Id:{text}存在多个");
+                        }
+                        RowDataDto rowData = new RowDataDto(excel.Index);
+                        rowData.Id = text;
+                        foreach (KeyValuePair<string, PropertyDto> item in tableDto.PropertyDic)
+                        {
+                            PropertyDto propertyDto = item.Value;
+                            ICell cell = row.GetCell(propertyDto.Index);
+                            rowData[item.Key] = ExcelHelper.GetCellValue(cell);
+
+                        }
+                        tableDto.Rows.Add(rowData);
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+                Console.ForegroundColor = ConsoleColor.White;
+                return false;
+            }
+        }
+
         /// <summary>
         /// 驼峰转化
         /// </summary>
@@ -206,115 +292,190 @@ namespace TableTool
             }
             return true;
         }
-        /// <summary>
-        /// 获得格式化类
-        /// </summary>
-        /// <returns></returns>
-        public static IFormat GetFormatClass()
+
+        internal static bool GenerateCode(GenerateDto generate)
         {
-            if (string.IsNullOrWhiteSpace(Params[CONSOLE_FORMAT]))
+            string codeName = Params[CONSOLE_CODE_TYPE].ToLower();
+            if (!GenerateDic.ContainsKey(codeName))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"导出类型为空,请使用?或者help确定参数");
+                Console.WriteLine($"代码生成类:{codeName}没找到,请检查插件中是否存在");
                 Console.ForegroundColor = ConsoleColor.White;
-                return null;
+                return false;
             }
-            switch (Params[CONSOLE_FORMAT].ToLower())
+            IGenerateCode generateCode = GenerateDic[codeName];
+            string packageName = "";
+            if (!string.IsNullOrWhiteSpace(Params[CONSOLE_NAMESPACE]))
             {
-                case "json":
-                    return new JsonFormat();
-                case "csv":
-                    return new CSVFormat();
-                case "luatable":
-                    return new LuaTableFormat();
-                case "luajson":
-                    return new LuaJsonFormat();
-                case "byte":
-                    return new BytesFormat();
-                default:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"类型:{Params[CONSOLE_FORMAT]}没找到,请使用?或者help确定参数");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    return null;
+                packageName = Params[CONSOLE_NAMESPACE];
+            }
+            foreach (var xlsDto in generate.XlsDtoList)
+            {
+                foreach (var tableDto in xlsDto.TableDtos)
+                {
+                    try
+                    {
+                        string fileName = tableDto.TableSheetName;
+                        string str = generateCode.Generate(packageName, tableDto, ref fileName);
+                        File.WriteAllText(Path.Combine(Params[CONSOLE_CODE_PATH], fileName), str, new UTF8Encoding());
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine($"生成代码:{tableDto.TableSheetName}成功");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine(ex.Message);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        internal static bool GenerateData(GenerateDto generate)
+        {
+            string formatName = Params[CONSOLE_FORMAT].ToLower();
+            if (!FormatDic.ContainsKey(formatName))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"数据生成类:{formatName}没找到,请检查插件中是否存在");
+                Console.ForegroundColor = ConsoleColor.White;
+                return false;
+            }
+            IFormat format = FormatDic[formatName];
+            ValueParse parse = new ValueParse();
+            MethodInfo methodInfo = parse.GetType().GetMethod("setParseValues", BindingFlags.Instance | BindingFlags.NonPublic);
+            methodInfo.Invoke(parse, new[] { ParseValueDic.Values.ToList() });
+            methodInfo.Invoke(parse, new[] { format.GetCustomParse() });
+            foreach (var xlsDto in generate.XlsDtoList)
+            {
+                foreach (var tableDto in xlsDto.TableDtos)
+                {
+                    try
+                    {
+                        string str = format.Format(tableDto, parse);
+                        File.WriteAllText(Path.Combine(Params[CONSOLE_OUT_PATH], tableDto.DataFileName), str, new UTF8Encoding());
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine($"生成:{tableDto.TableSheetName}成功");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine(ex.Message);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+        /// <summary>
+        /// 加载默认的数据转换
+        /// </summary>
+        private static void LoadValueParse()
+        {
+            Type parseType = typeof(IParseValue);
+            Type[] types = typeof(Program).Assembly.GetTypes();
+            foreach (var item in types)
+            {
+                if (!item.IsAbstract && !item.IsInterface)
+                {
+                    if (item.IsAssignableTo(parseType))
+                    {
+                        IParseValue parseValue = Activator.CreateInstance(item) as IParseValue;
+                        string str = parseValue.Name.ToLower();
+                        if (ParseValueDic.ContainsKey(str))
+                        {
+                            ParseValueDic[str] = parseValue;
+                        }
+                        else
+                        {
+                            ParseValueDic.Add(str, parseValue);
+                        }
+                    }
+                }
             }
         }
 
-        private static void GetTypeName(string name, ref PropertyDto dto)
+        /// <summary>
+        /// 加载插件
+        /// </summary>
+        private static void LoadPlugin()
         {
-            string text = name;
-            if (text.StartsWith("enum_"))
+            ResolveAssembly(typeof(Program).Assembly);
+            if (Directory.Exists(PLUGIN_PATH))
             {
-                text = "enum";
+                string[] paths = Directory.GetFiles(PLUGIN_PATH, "*.dll");
+                foreach (var item in paths)
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(item);
+                    Assembly assembly = Assembly.LoadFile(Path.GetFullPath(item));
+                    ResolveAssembly(assembly);
+                    Console.WriteLine($"插件:{Path.GetFileNameWithoutExtension(item)} 加载完毕");
+                }
             }
-            dto.IsEnum = false;
-            dto.IsArray = true;
-            switch (text)
+        }
+
+        /// <summary>
+        /// 解析程序集
+        /// </summary>
+        /// <param name="assembly"></param>
+        private static void ResolveAssembly(Assembly assembly)
+        {
+            string assemblyName = assembly.GetName().Name;
+            if (PluginDic.ContainsKey(assemblyName))
             {
-                case "bool":
-                case "int":
-                case "uint":
-                case "byte":
-                case "short":
-                case "long":
-                case "ulong":
-                case "float":
-                case "string":
-                    dto.IsArray = false;
-                    dto.PropertyType = name;
-                    break;
-                case "enum":
-                    {
-                        //    dto.IsEnum = true;
-                        //    dto.IsArray = false;
-                        //    string text2 = name.Split(new char[1]
-                        //    {
-                        //'_'
-                        //    }, StringSplitOptions.RemoveEmptyEntries)[1];
-                        //    dto.EnumType = text2;
-                        //    text2 = text2.ToLower();
-                        //    foreach (KeyValuePair<string, Type> item in EnumsTypeDic)
-                        //    {
-                        //        if (item.Key.ToLower() == text2)
-                        //        {
-                        //            dto.PropertyType = item.Key;
-                        //            goto End;
-                        //        }
-                        //    }
-                        //    dto.PropertyType = "int";
-                        break;
-                    }
-                case "array_int":
-                    dto.PropertyType = "int[]";
-                    break;
-                case "array_uint":
-                    dto.PropertyType = "uint[]";
-                    break;
-                case "array_byte":
-                    dto.PropertyType = "byte[]";
-                    break;
-                case "array_short":
-                    dto.PropertyType = "short[]";
-                    break;
-                case "array_long":
-                    dto.PropertyType = "long[]";
-                    break;
-                case "array_ulong":
-                    dto.PropertyType = "ulong[]";
-                    break;
-                case "array_float":
-                    dto.PropertyType = "float[]";
-                    break;
-                case "array_string":
-                    dto.PropertyType = "string[]";
-                    break;
-                default:
-                    {
-                        dto.IsArray = false;
-                        dto.PropertyType = "int";
-                        break;
-                    }
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"插件:{assemblyName}重复加载");
+                Console.ForegroundColor = ConsoleColor.White;
+                PluginDic[assemblyName] = assembly;
             }
-        End: int num = 0;
+            else
+            {
+                PluginDic.Add(assemblyName, assembly);
+            }
+            Type[] types = assembly.GetTypes();
+
+            foreach (var item in types)
+            {
+                if (!item.IsAbstract && !item.IsInterface)
+                {
+                    if (item.IsAssignableTo(FormatType))
+                    {
+                        IFormat format = Activator.CreateInstance(item) as IFormat;
+                        string str = format.Name.ToLower();
+                        if (FormatDic.ContainsKey(str))
+                        {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine($"格式化:{format.Name} 已存在,即将被覆盖");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            FormatDic[str] = format;
+                        }
+                        else
+                        {
+                            FormatDic.Add(str, format);
+                        }
+                    }
+                    else if (item.IsAssignableTo(GenerateType))
+                    {
+                        IGenerateCode generateCode = Activator.CreateInstance(item) as IGenerateCode;
+                        string str = generateCode.Name.ToLower();
+                        if (GenerateDic.ContainsKey(str))
+                        {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine($"代码生成:{generateCode.Name} 已存在,即将被覆盖");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            GenerateDic[str] = generateCode;
+                        }
+                        else
+                        {
+                            GenerateDic.Add(str, generateCode);
+                        }
+                    }
+                }
+            }
+
         }
     }
 }

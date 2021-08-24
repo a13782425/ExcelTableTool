@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Transactions;
-using TableTool.Format;
+using TableCore;
 using static TableTool.GlobalConst;
 
 namespace TableTool
@@ -13,6 +14,9 @@ namespace TableTool
         //platform=client excelPath=Table
         static void Main(string[] args)
         {
+            Console.WriteLine($"插件放置路径:{PLUGIN_PATH}");
+            Tool.Init();
+
             if (!GenerateEnumCode.Generate())
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -59,7 +63,6 @@ namespace TableTool
             Console.WriteLine("关闭中。。。");
             Thread.Sleep(1000);
         }
-
         /// <summary>
         /// 解析控制台输入
         /// </summary>
@@ -113,35 +116,31 @@ namespace TableTool
 
         private static void GenerateTable()
         {
-            Generate = new GenerateDto();
-            if (!Tool.CheckExcel())
+            GenerateDto generate = new GenerateDto();
+            if (!Tool.CheckExcel(generate))
             {
                 return;
             }
-            if (!Tool.ResolveExcel())
+            if (!Tool.ResolveExcel(generate))
             {
                 return;
             }
             //如果有导出则生成数据
             if (Tool.CheckOutPath())
             {
-                IFormat format = Tool.GetFormatClass();
-                if (format == null)
+                if (!Tool.GenerateData(generate))
                 {
                     return;
                 }
-                format.GenerateData();
             }
             if (!string.IsNullOrWhiteSpace(Params[CONSOLE_CODE_TYPE]))
             {
                 if (Tool.CheckCodeOutPath())
                 {
-                    IFormat format = Tool.GetFormatClass();
-                    if (format == null)
+                    if (!Tool.GenerateCode(generate))
                     {
                         return;
                     }
-                    format.GenerateCode();
                 }
                 else
                 {

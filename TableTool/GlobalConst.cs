@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
+using TableCore;
 
 namespace TableTool
 {
@@ -38,6 +40,11 @@ namespace TableTool
             Params.Add("allsheet", "1");
         }
         public static Dictionary<string, string> Params = new Dictionary<string, string>();
+
+        /// <summary>
+        /// 插件根目录
+        /// </summary>
+        public const string PLUGIN_PATH = "Plugin";
 
         public const string GAME_ENUM_PATH = "GameEnum";
         /// <summary>
@@ -112,9 +119,37 @@ namespace TableTool
         /// 客户端
         /// </summary>
         public const string PLATFORM_SERVER = "server";
+        ///// <summary>
+        ///// 生成数据模型DTO
+        ///// </summary>
+        //public static GenerateDto Generate;
+
         /// <summary>
-        /// 生成数据模型DTO
+        /// 插件缓存
+        /// key:插件名 value:插件程序集
         /// </summary>
-        public static GenerateDto Generate;
+        public readonly static Dictionary<string, Assembly> PluginDic = new Dictionary<string, Assembly>();
+
+        /// <summary>
+        /// 格式化类缓存
+        /// key:格式化名 value:格式化对象
+        /// </summary>
+        public readonly static Dictionary<string, IFormat> FormatDic = new Dictionary<string, IFormat>();
+
+        public readonly static Type FormatType = typeof(IFormat);
+
+        /// <summary>
+        /// 代码生成类缓存
+        /// key:代码生成名 value:代码生成对象
+        /// </summary>
+        public readonly static Dictionary<string, IGenerateCode> GenerateDic = new Dictionary<string, IGenerateCode>();
+        public readonly static Type GenerateType = typeof(IGenerateCode);
+
+        /// <summary>
+        /// 数据解析
+        /// key:name value:数据解析对象
+        /// </summary>
+        public readonly static Dictionary<string, IParseValue> ParseValueDic = new Dictionary<string, IParseValue>();
+
     }
 }
