@@ -36,7 +36,7 @@ namespace JavaFormat
                 string typeName = GetTypeName(propertyDto.PropertyType);
                 string fieldName = propertyDto.PropertyName;
                 string funcFieldName = fieldName.ToUpperFirst();
-                System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(fieldName);
+                //System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(fieldName);
                 //for (int i = 0; i < fieldName.Length; i++)
                 //{
                 //    if (i == 0)
