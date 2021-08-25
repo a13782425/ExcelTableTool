@@ -16,7 +16,6 @@ namespace TableTool
             Params.Add("codetype", null);
             Params.Add("codepath", null);
             Params.Add("format", null);
-            Params.Add("extension", null);
             Params.Add("namespace", null);
             Params.Add("encrypt", null);
             Params.Add("hump", null);
@@ -32,7 +31,6 @@ namespace TableTool
             Params.Add("codetype", null);
             Params.Add("codepath", null);
             Params.Add("format", null);
-            Params.Add("extension", null);
             Params.Add("namespace", null);
             Params.Add("encrypt", null);
             Params.Add("hump", null);
@@ -71,10 +69,6 @@ namespace TableTool
         /// 运行指令-文件格式(csv?json?byte?luaTable)
         /// </summary>
         public const string CONSOLE_FORMAT = "format";
-        /// <summary>
-        /// 运行指令-文件后缀(.csv?.json,.byte?.luatable)
-        /// </summary>
-        public const string CONSOLE_EXTENSION = "extension";
         /// <summary>
         /// 运行指令-命名空间(包名)
         /// </summary>

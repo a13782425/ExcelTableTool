@@ -2,7 +2,7 @@
   "profiles": {
     "TableTool": {
       "commandName": "Project",
-      "commandLineArgs": "platform=client excelPath=Table codetype=oldjava codepath=java extension=.lua hump=1"
+      "commandLineArgs": "platform=client excelPath=Table codetype=oldjava codepath=java extension=.json outpath=json format=javajson hump=1"
     }
   }
 }

@@ -25,7 +25,8 @@ namespace TableCore
         /// </summary>
         /// <param name="tableDto"></param>
         /// <param name="parse"></param>
+        /// <param name="fileName">文件名</param>
         /// <returns></returns>
-        string Format(TableDto tableDto, ValueParse parse);
+        string Format(TableDto tableDto, ValueParse parse, ref string fileName);
     }
 }

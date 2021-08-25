@@ -10,7 +10,7 @@ namespace LuaTableFormat
     {
         public string Name => "luatable";
 
-        public string Format(TableDto tableDto, ValueParse parse)
+        public string Format(TableDto tableDto, ValueParse parse, ref string fileName)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("------------------------------------------------------------------------------------------------------------");
@@ -72,6 +72,7 @@ namespace LuaTableFormat
             sb.AppendLine($"config.Length = {tableDto.Rows.Count}");
             sb.AppendLine(dataSb.ToString());
             sb.AppendLine("return config");
+            fileName = $"table_{fileName}.lua";
             return sb.ToString();
         }
         private string GetFormatValue(object res, string typeName, ValueParse parse)

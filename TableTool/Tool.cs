@@ -89,10 +89,6 @@ namespace TableTool
                         tableDto.TableSheetName = item.TableName;
                     }
                     tableDto.DataFileName = tableDto.TableSheetName;
-                    if (!string.IsNullOrWhiteSpace(Params[CONSOLE_EXTENSION]))
-                    {
-                        tableDto.DataFileName += Params[CONSOLE_EXTENSION];
-                    }
                     IRow nextRow = item.GetNextRow();
                     IRow nextRow2 = item.GetNextRow();
                     IRow nextRow3 = item.GetNextRow();
@@ -186,7 +182,7 @@ namespace TableTool
                     num++;
                     if (row == null)
                     {
-                        Console.WriteLine($"{tableDto.ExcelFileName}表中{ tableDto.TableSheetName}页签,第:{excel.Index}行为空");
+                        Console.WriteLine($"{tableDto.ExcelFileName}表中{ tableDto.TableSheetName}页签,第{excel.Index}行为空");
                     }
                     else
                     {
@@ -196,12 +192,14 @@ namespace TableTool
                         }
                         if (row.GetCell(1) == null)
                         {
-                            throw new Exception($"{tableDto.ExcelFileName}表中{ tableDto.TableSheetName}页签,第:{excel.Index}行Id为空");
+                            break;
+                            //throw new Exception($"{tableDto.ExcelFileName}表中{ tableDto.TableSheetName}页签,第{excel.Index}行Id为空");
                         }
                         string text = row.GetCell(1).ToString();
                         if (string.IsNullOrWhiteSpace(text))
                         {
-                            throw new Exception($"{tableDto.ExcelFileName}表中{ tableDto.TableSheetName}页签,第:{excel.Index}行Id为空");
+                            break;
+                            //throw new Exception($"{tableDto.ExcelFileName}表中{ tableDto.TableSheetName}页签,第:{excel.Index}行Id为空");
                         }
                         if (!keyList.Contains(text))
                         {
@@ -353,8 +351,9 @@ namespace TableTool
                 {
                     try
                     {
-                        string str = format.Format(tableDto, parse);
-                        File.WriteAllText(Path.Combine(Params[CONSOLE_OUT_PATH], tableDto.DataFileName), str, new UTF8Encoding());
+                        string fileName = tableDto.DataFileName;
+                        string str = format.Format(tableDto, parse, ref fileName);
+                        File.WriteAllText(Path.Combine(Params[CONSOLE_OUT_PATH], fileName), str, new UTF8Encoding());
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.WriteLine($"生成:{tableDto.TableSheetName}成功");
                     }

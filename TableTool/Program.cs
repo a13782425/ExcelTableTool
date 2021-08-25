@@ -162,7 +162,6 @@ namespace TableTool
             Console.WriteLine("excelpath      -表格文件夹(表格必须是.xlsx后缀)");
             Console.WriteLine("outpath        -数据输出文件夹");
             Console.WriteLine("format         -数据输出文件格式(csv,json,byte,luatable,luajson)");
-            Console.WriteLine("extension      -数据文件自定义后缀(.json,.csv,.byte等)");
             Console.WriteLine("hump           -驼峰命名");
             Console.WriteLine("allsheet       -是否是全部sheet,1代表全部,其他代表名为data的Sheet或第一个Sheet");
             Console.WriteLine("codetype       -代码类型(java,csharp)");
