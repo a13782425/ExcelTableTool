@@ -122,9 +122,25 @@ namespace JavaFormat
                 case "array_ulong":
                     return "long[]";
                 case "array_float":
-                    return "float";
+                    return "float[]";
                 case "array_string":
                     return "String[]";
+                case "array_int2":
+                    return "int[][]";
+                case "array_uint2":
+                    return "int[][]";
+                case "array_byte2":
+                    return "byte[][]";
+                case "array_short2":
+                    return "short[][]";
+                case "array_long2":
+                    return "long[][]";
+                case "array_ulong2":
+                    return "long[][]";
+                case "array_float2":
+                    return "float[][]";
+                case "array_string2":
+                    return "String[][]";
                 default:
                     return "int";
             }
