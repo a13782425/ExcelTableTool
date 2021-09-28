@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
@@ -37,7 +37,7 @@ namespace TableTool
             Params.Add("exit", "0");
             Params.Add("allsheet", "1");
         }
-        public static Dictionary<string, string> Params = new Dictionary<string, string>();
+        public static Dictionary<string, string> Params = ToolParams.Params;
 
         /// <summary>
         /// 插件根目录
@@ -113,10 +113,6 @@ namespace TableTool
         /// 客户端
         /// </summary>
         public const string PLATFORM_SERVER = "server";
-        ///// <summary>
-        ///// 生成数据模型DTO
-        ///// </summary>
-        //public static GenerateDto Generate;
 
         /// <summary>
         /// 插件缓存

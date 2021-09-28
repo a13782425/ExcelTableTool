@@ -1,4 +1,4 @@
-﻿using NPOI.SS.UserModel;
+using NPOI.SS.UserModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -315,9 +315,12 @@ namespace TableTool
                     {
                         string fileName = tableDto.TableSheetName;
                         string str = generateCode.Generate(packageName, tableDto, ref fileName);
-                        File.WriteAllText(Path.Combine(Params[CONSOLE_CODE_PATH], fileName), str, new UTF8Encoding());
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine($"生成代码:{tableDto.TableSheetName}成功");
+                        if (string.IsNullOrWhiteSpace(fileName))
+                        {
+                            File.WriteAllText(Path.Combine(Params[CONSOLE_CODE_PATH], fileName), str, new UTF8Encoding());
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.WriteLine($"生成代码:{tableDto.TableSheetName}成功");
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -353,9 +356,12 @@ namespace TableTool
                     {
                         string fileName = tableDto.DataFileName;
                         string str = format.Format(tableDto, parse, ref fileName);
-                        File.WriteAllText(Path.Combine(Params[CONSOLE_OUT_PATH], fileName), str, new UTF8Encoding());
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine($"生成:{tableDto.TableSheetName}成功");
+                        if (string.IsNullOrWhiteSpace(fileName))
+                        {
+                            File.WriteAllText(Path.Combine(Params[CONSOLE_OUT_PATH], fileName), str, new UTF8Encoding());
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.WriteLine($"生成:{tableDto.TableSheetName}成功");
+                        }
                     }
                     catch (Exception ex)
                     {
