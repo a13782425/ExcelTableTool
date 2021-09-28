@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -75,6 +75,7 @@ namespace LuaTableFormat
             fileName = $"table_{fileName}.lua";
             return sb.ToString();
         }
+        public List<IParseValue> GetCustomParse() => new List<IParseValue>() { new BoolParse() };
         private string GetFormatValue(object res, string typeName, ValueParse parse)
         {
             string text = typeName;

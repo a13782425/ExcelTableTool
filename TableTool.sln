@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TableTool", "TableTool\Tabl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TableCore", "TableCore\TableCore.csproj", "{E3F4A4D5-0B04-4CC9-8FF4-215E6D3A3EF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuaTableFormat", "LuaTableFormat\LuaTableFormat.csproj", "{44ECD473-424E-4AD8-9F97-AA2E2BDEC52D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LuaTableFormat", "LuaTableFormat\LuaTableFormat.csproj", "{44ECD473-424E-4AD8-9F97-AA2E2BDEC52D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JavaFormat", "JavaFormat\JavaFormat.csproj", "{C3B8B7EC-5574-4EA5-8776-0A862A56970D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JavaFormat", "JavaFormat\JavaFormat.csproj", "{C3B8B7EC-5574-4EA5-8776-0A862A56970D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

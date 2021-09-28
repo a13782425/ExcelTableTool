@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,7 +30,17 @@ namespace TableCore
             IParseValue parse = this[key];
             if (parse != null)
             {
-                return parse.Parse(value, out res);
+                try
+                {
+                    return parse.Parse(value, out res);
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine($"数据解析失败,类型:{key},已返回原值");
+                    res = value;
+                    return false;
+                }
+
             }
             Console.WriteLine($"数据解析失败,类型:{key},已返回原值");
             res = value;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
@@ -15,7 +15,7 @@ namespace JavaFormat
         public string Format(TableDto tableDto, ValueParse parse, ref string fileName)
         {
             List<dynamic> list = new List<dynamic>();
-            
+
             foreach (RowDataDto row in tableDto.Rows)
             {
                 dynamic dy = new ExpandoObject();
@@ -38,5 +38,7 @@ namespace JavaFormat
             fileName += ".json";
             return parse.ToJson(list);
         }
+
+        public List<IParseValue> GetCustomParse() => new List<IParseValue>() { new BoolParse() };
     }
 }
