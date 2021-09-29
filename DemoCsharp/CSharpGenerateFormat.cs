@@ -14,13 +14,11 @@ namespace DemoCsharp
 
         public static BinaryWriter Binary { get; private set; }
 
-        public string Format(TableDto tableDto, ValueParse parse, ref string fileName)
+        public byte[] Format(TableDto tableDto, ValueParse parse, ref string fileName)
         {
-            string filePath = Path.Combine(ToolParams.Params["outpath"], fileName);
-            fileName = "";
-            filePath += ".bytes";
-            FileStream fileStream = new FileStream(filePath, FileMode.Create);
-            Binary = new BinaryWriter(fileStream);
+            fileName = fileName + ".bytes";
+            MemoryStream stream = new MemoryStream();
+            Binary = new BinaryWriter(stream);
             foreach (var row in tableDto.Rows)
             {
                 foreach (KeyValuePair<string, PropertyDto> propPair in tableDto.PropertyDic)
@@ -32,17 +30,18 @@ namespace DemoCsharp
                         Binary.Close();
                         Binary.Dispose();
                         Binary = null;
-                        fileStream.Close();
-                        fileStream.Dispose();
+                        stream.Close();
+                        stream.Dispose();
                         throw new Exception($"{tableDto.ExcelFileName}中第{row.RowNum}行中，{propPair.Key}序列化失败，错误类型为:{propPair.Value.PropertyType}，请查看");
                     }
                 }
             }
+            byte[] array = stream.GetBuffer();
             Binary.Close();
             Binary.Dispose();
-            fileStream.Close();
-            fileStream.Dispose();
-            byte[] array = File.ReadAllBytes(filePath);
+            Binary = null;
+            stream.Close();
+            stream.Dispose();
             byte[] array2 = new byte[array.Length + 1];
             Random random = new Random();
             array2[0] = (byte)random.Next(1, 255);
@@ -50,8 +49,7 @@ namespace DemoCsharp
             {
                 array2[j + 1] = (byte)(array[j] ^ array2[0]);
             }
-            File.WriteAllBytes(filePath, array2);
-            return "";
+            return array2;
         }
 
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace TableCore
@@ -27,6 +27,6 @@ namespace TableCore
         /// <param name="parse"></param>
         /// <param name="fileName">文件名</param>
         /// <returns></returns>
-        string Format(TableDto tableDto, ValueParse parse, ref string fileName);
+        byte[] Format(TableDto tableDto, ValueParse parse, ref string fileName);
     }
 }

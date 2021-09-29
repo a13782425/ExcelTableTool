@@ -12,7 +12,7 @@ namespace JavaFormat
     {
         public string Name => "javajson";
 
-        public string Format(TableDto tableDto, ValueParse parse, ref string fileName)
+        public byte[] Format(TableDto tableDto, ValueParse parse, ref string fileName)
         {
             List<dynamic> list = new List<dynamic>();
 
@@ -36,7 +36,7 @@ namespace JavaFormat
                 list.Add(dy);
             }
             fileName += ".json";
-            return parse.ToJson(list);
+            return Encoding.UTF8.GetBytes(parse.ToJson(list));
         }
 
         public List<IParseValue> GetCustomParse() => new List<IParseValue>() { new BoolParse() };

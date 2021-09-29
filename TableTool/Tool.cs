@@ -355,13 +355,16 @@ namespace TableTool
                     try
                     {
                         string fileName = tableDto.DataFileName;
-                        string str = format.Format(tableDto, parse, ref fileName);
-                        if (string.IsNullOrWhiteSpace(fileName))
-                        {
-                            File.WriteAllText(Path.Combine(Params[CONSOLE_OUT_PATH], fileName), str, new UTF8Encoding());
-                            Console.ForegroundColor = ConsoleColor.White;
-                            Console.WriteLine($"生成:{tableDto.TableSheetName}成功");
-                        }
+                        byte[] bytes = format.Format(tableDto, parse, ref fileName);
+                        File.WriteAllBytes(Path.Combine(Params[CONSOLE_OUT_PATH], fileName), bytes);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine($"生成:{tableDto.TableSheetName}成功");
+                        //if (string.IsNullOrWhiteSpace(fileName))
+                        //{
+                        //    File.WriteAllText(Path.Combine(Params[CONSOLE_OUT_PATH], fileName), str, new UTF8Encoding());
+                        //    Console.ForegroundColor = ConsoleColor.White;
+                        //    Console.WriteLine($"生成:{tableDto.TableSheetName}成功");
+                        //}
                     }
                     catch (Exception ex)
                     {

@@ -10,7 +10,7 @@ namespace LuaTableFormat
     {
         public string Name => "luatable";
 
-        public string Format(TableDto tableDto, ValueParse parse, ref string fileName)
+        public byte[] Format(TableDto tableDto, ValueParse parse, ref string fileName)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("------------------------------------------------------------------------------------------------------------");
@@ -73,7 +73,7 @@ namespace LuaTableFormat
             sb.AppendLine(dataSb.ToString());
             sb.AppendLine("return config");
             fileName = $"table_{fileName}.lua";
-            return sb.ToString();
+            return Encoding.UTF8.GetBytes(sb.ToString());
         }
         public List<IParseValue> GetCustomParse() => new List<IParseValue>() { new BoolParse() };
         private string GetFormatValue(object res, string typeName, ValueParse parse)
