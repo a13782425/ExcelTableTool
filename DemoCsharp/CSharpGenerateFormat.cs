@@ -36,7 +36,7 @@ namespace DemoCsharp
                     }
                 }
             }
-            byte[] array = stream.GetBuffer();
+            byte[] array = stream.ToArray();
             Binary.Close();
             Binary.Dispose();
             Binary = null;
@@ -55,12 +55,18 @@ namespace DemoCsharp
 
         public List<IParseValue> GetCustomParse()
         {
-            return new List<IParseValue>()
+            var types = typeof(CSharpGenerateFormat).Assembly.GetTypes();
+            var faceType = typeof(IParseValue);
+            List<IParseValue> lists = new List<IParseValue>();
+            foreach (var item in types)
             {
-                new IntParse(),
-                new StringParse(),
-                new GameAttrEnumParse(),
-            };
+                if (!item.IsAbstract && !item.IsInterface && item.IsAssignableTo(faceType))
+                {
+                    IParseValue parse = Activator.CreateInstance(item) as IParseValue;
+                    lists.Add(parse);
+                }
+            }
+            return lists;
         }
     }
 }

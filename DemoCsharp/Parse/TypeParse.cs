@@ -60,6 +60,28 @@ namespace DemoCsharp
             return false;
         }
     }
+
+    public sealed class ByteParse : IParseValue
+    {
+        public string Name => "byte";
+
+        public bool Parse(string value, out object res)
+        {
+            res = 0;
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                CSharpGenerateFormat.Binary.Write((byte)0);
+                return true;
+            }
+            if (byte.TryParse(value, out var result))
+            {
+                CSharpGenerateFormat.Binary.Write(result);
+                return true;
+            }
+            return false;
+        }
+    }
+
     public sealed class ShortParse : IParseValue
     {
         public string Name => "short";
@@ -204,10 +226,9 @@ namespace DemoCsharp
         }
     }
 
-    public sealed class ArrayByteParse : IParseValue
+    public abstract class ArrayBaseParse<T> : IParseValue
     {
-        public string Name => "array_byte";
-
+        public abstract string Name { get; }
         public bool Parse(string value, out object res)
         {
             res = 0;
@@ -218,15 +239,15 @@ namespace DemoCsharp
             }
             try
             {
-                byte[] array = JsonConvert.DeserializeObject<byte[]>(value);
+                T[] array = JsonConvert.DeserializeObject<T[]>(value);
                 if (array.Length >= byte.MaxValue)
                 {
                     throw new Exception("数组长度最多不能超过255");
                 }
                 CSharpGenerateFormat.Binary.Write((byte)array.Length);
-                foreach (byte b in array)
+                foreach (T b in array)
                 {
-                    CSharpGenerateFormat.Binary.Write(b);
+                    Write(b);
                 }
                 return true;
             }
@@ -235,17 +256,27 @@ namespace DemoCsharp
                 return false;
             }
         }
-    }
-    public sealed class ArrayByte2Parse : IParseValue
-    {
-        public string Name => "array_byte2";
 
-        public bool Parse(string value, out object res)
+        public abstract void Write(T v);
+    }
+
+    public abstract class Array2BaseParse<T> : IParseValue
+    {
+        public abstract string Name { get; }
+
+        private bool Parse(T[] array)
         {
-            res = 0;
             try
             {
-                res = JsonConvert.DeserializeObject<byte[,]>(value);
+                if (array.Length >= byte.MaxValue)
+                {
+                    throw new Exception("数组长度最多不能超过255");
+                }
+                CSharpGenerateFormat.Binary.Write((byte)array.Length);
+                foreach (T b in array)
+                {
+                    Write(b);
+                }
                 return true;
             }
             catch (Exception)
@@ -253,6 +284,185 @@ namespace DemoCsharp
                 return false;
             }
         }
+        public bool Parse(string value, out object res)
+        {
+            res = 0;
+            try
+            {
+                //byte[][] bytes = new byte[1][];
+                T[][] array = JsonConvert.DeserializeObject<T[][]>(value);
+                if (array.Length >= byte.MaxValue)
+                {
+                    throw new Exception("数组长度最多不能超过255");
+                }
+                CSharpGenerateFormat.Binary.Write((byte)array.Length);
+                foreach (T[] item in array)
+                {
+                    Parse(item);
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public abstract void Write(T v);
     }
 
+
+    public sealed class ArrayByteParse : ArrayBaseParse<byte>
+    {
+        public override string Name => "array_byte";
+
+        public override void Write(byte v)
+        {
+            CSharpGenerateFormat.Binary.Write(v);
+        }
+    }
+    public sealed class ArrayByte2Parse : Array2BaseParse<byte>
+    {
+        public override string Name => "array_byte2";
+        public override void Write(byte v)
+        {
+            CSharpGenerateFormat.Binary.Write(v);
+        }
+    }
+
+    public sealed class ArrayIntParse : ArrayBaseParse<int>
+    {
+        public override string Name => "array_int";
+
+        public override void Write(int v)
+        {
+            CSharpGenerateFormat.Binary.Write(v);
+        }
+    }
+    public sealed class ArrayInt2Parse : Array2BaseParse<int>
+    {
+        public override string Name => "array_int2";
+
+        public override void Write(int v)
+        {
+            CSharpGenerateFormat.Binary.Write(v);
+        }
+    }
+
+    public sealed class ArrayUIntParse : ArrayBaseParse<uint>
+    {
+        public override string Name => "array_uint";
+
+        public override void Write(uint v)
+        {
+            CSharpGenerateFormat.Binary.Write(v);
+        }
+    }
+    public sealed class ArrayUInt2Parse : Array2BaseParse<uint>
+    {
+        public override string Name => "array_uint2";
+
+        public override void Write(uint v)
+        {
+            CSharpGenerateFormat.Binary.Write(v);
+        }
+    }
+
+
+    public sealed class ArrayShortParse : ArrayBaseParse<short>
+    {
+        public override string Name => "array_short";
+
+        public override void Write(short v)
+        {
+            CSharpGenerateFormat.Binary.Write(v);
+        }
+    }
+    public sealed class ArrayShort2Parse : Array2BaseParse<short>
+    {
+        public override string Name => "array_short2";
+
+        public override void Write(short v)
+        {
+            CSharpGenerateFormat.Binary.Write(v);
+        }
+    }
+
+
+    public sealed class ArrayLongParse : ArrayBaseParse<long>
+    {
+        public override string Name => "array_long";
+
+        public override void Write(long v)
+        {
+            CSharpGenerateFormat.Binary.Write(v);
+        }
+    }
+    public sealed class ArrayLong2Parse : Array2BaseParse<long>
+    {
+        public override string Name => "array_long2";
+
+        public override void Write(long v)
+        {
+            CSharpGenerateFormat.Binary.Write(v);
+        }
+    }
+
+    public sealed class ArrayULongParse : ArrayBaseParse<ulong>
+    {
+        public override string Name => "array_ulong";
+
+        public override void Write(ulong v)
+        {
+            CSharpGenerateFormat.Binary.Write(v);
+        }
+    }
+    public sealed class ArrayULong2Parse : Array2BaseParse<ulong>
+    {
+        public override string Name => "array_ulong2";
+
+        public override void Write(ulong v)
+        {
+            CSharpGenerateFormat.Binary.Write(v);
+        }
+    }
+
+    public sealed class ArrayFloatParse : ArrayBaseParse<float>
+    {
+        public override string Name => "array_float";
+
+        public override void Write(float v)
+        {
+            CSharpGenerateFormat.Binary.Write(v);
+        }
+    }
+    public sealed class ArrayFloat2Parse : Array2BaseParse<float>
+    {
+        public override string Name => "array_float2";
+
+        public override void Write(float v)
+        {
+            CSharpGenerateFormat.Binary.Write(v);
+        }
+    }
+
+    public sealed class ArrayStringParse : ArrayBaseParse<string>
+    {
+        public override string Name => "array_string";
+
+        public override void Write(string v)
+        {
+            CSharpGenerateFormat.Binary.Write(v);
+        }
+    }
+    public sealed class ArrayString2Parse : Array2BaseParse<string>
+    {
+        public override string Name => "array_string2";
+
+        public override void Write(string v)
+        {
+            CSharpGenerateFormat.Binary.Write(v);
+        }
+    }
 }
