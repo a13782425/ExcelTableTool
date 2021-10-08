@@ -192,14 +192,14 @@ namespace TableTool
                         }
                         if (row.GetCell(1) == null)
                         {
-                            break;
-                            //throw new Exception($"{tableDto.ExcelFileName}表中{ tableDto.TableSheetName}页签,第{excel.Index}行Id为空");
+                            //break;
+                            throw new Exception($"{tableDto.ExcelFileName}表中{ tableDto.TableSheetName}页签,第{excel.Index}行Id为空");
                         }
                         string text = row.GetCell(1).ToString();
                         if (string.IsNullOrWhiteSpace(text))
                         {
-                            break;
-                            //throw new Exception($"{tableDto.ExcelFileName}表中{ tableDto.TableSheetName}页签,第:{excel.Index}行Id为空");
+                            //break;
+                            throw new Exception($"{tableDto.ExcelFileName}表中{ tableDto.TableSheetName}页签,第:{excel.Index}行Id为空");
                         }
                         if (!keyList.Contains(text))
                         {

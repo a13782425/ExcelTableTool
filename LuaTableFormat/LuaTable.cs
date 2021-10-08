@@ -50,7 +50,10 @@ namespace LuaTableFormat
                 {
                     PropertyDto prop = tempList[i];
                     object res = null;
-                    parse.Parse(prop.PropertyType, item[prop.PropertyName], out res);
+                    if (!parse.Parse(prop.PropertyType, item[prop.PropertyName], out res))
+                    {
+                        throw new Exception($"{tableDto.ExcelFileName}中第{item.RowNum}行中，{prop.PropertyName}序列化失败，错误类型为:{prop.PropertyType}，请查看");
+                    }
                     string value = GetFormatValue(res, prop.PropertyType, parse);
                     if (i != tempList.Count - 1)
                     {
