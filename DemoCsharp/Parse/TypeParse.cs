@@ -453,7 +453,7 @@ namespace DemoCsharp
 
         public override void Write(string v)
         {
-            CSharpGenerateFormat.Binary.Write(v);
+            CSharpGenerateFormat.Binary.Write(v.ToString());
         }
     }
     public sealed class ArrayString2Parse : Array2BaseParse<string>

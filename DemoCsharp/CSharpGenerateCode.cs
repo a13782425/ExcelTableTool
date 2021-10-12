@@ -13,7 +13,11 @@ namespace DemoCsharp
 
         public string Generate(string package, TableDto tableDto, ref string fileName)
         {
-            fileName += ".cs";
+
+            fileName += "Table.gen.cs";
+            fileName = fileName.Substring(0, 1).ToUpper() + fileName.Substring(1);
+            string className = tableDto.TableSheetName + "Table";
+            className = className.Substring(0, 1).ToUpper() + className.Substring(1);
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine($"/*");
             stringBuilder.AppendLine($"\t生成代码,禁止修改");
@@ -24,9 +28,9 @@ namespace DemoCsharp
             stringBuilder.AppendLine($"using System.Linq;");
             stringBuilder.AppendLine($"using System.IO;");
             stringBuilder.AppendLine();
-            stringBuilder.AppendLine($"internal partial class {tableDto.TableSheetName } : TableBase<{tableDto.TableSheetName }>");
+            stringBuilder.AppendLine($"internal partial class {className } : TableBase<{className }>");
             stringBuilder.AppendLine($"{{");
-            stringBuilder.AppendLine($"    internal readonly Dictionary<int, {tableDto.TableSheetName}> data = new Dictionary<int, {tableDto.TableSheetName }>();");
+            stringBuilder.AppendLine($"    internal readonly Dictionary<int, {className}> data = new Dictionary<int, {className}>();");
             foreach (var item in tableDto.PropertyDic)
             {
                 PropertyDto property = item.Value;
@@ -36,17 +40,17 @@ namespace DemoCsharp
                 stringBuilder.AppendLine($"    internal { GetType(property.PropertyType)} {property.PropertyName } {{ get; private set; }}");
             }
             stringBuilder.AppendLine();
-            stringBuilder.AppendLine($"    internal IEnumerable<{ tableDto.TableSheetName }> GetList(Func<{ tableDto.TableSheetName }, bool> predicate)");
+            stringBuilder.AppendLine($"    internal IEnumerable<{className}> GetList(Func<{className}, bool> predicate)");
             stringBuilder.AppendLine($"    {{");
             stringBuilder.AppendLine($"        return data.Values.Where(predicate);");
             stringBuilder.AppendLine($"    }}");
             stringBuilder.AppendLine();
-            stringBuilder.AppendLine($"    internal { tableDto.TableSheetName } Get(Func<{ tableDto.TableSheetName }, bool> predicate)");
+            stringBuilder.AppendLine($"    internal {className} Get(Func<{className}, bool> predicate)");
             stringBuilder.AppendLine($"    {{");
             stringBuilder.AppendLine($"        return data.Values.FirstOrDefault(predicate);");
             stringBuilder.AppendLine($"    }}");
             stringBuilder.AppendLine();
-            stringBuilder.AppendLine($"    internal { tableDto.TableSheetName} Get(int id)");
+            stringBuilder.AppendLine($"    internal {className} Get(int id)");
             stringBuilder.AppendLine($"    {{");
             stringBuilder.AppendLine($"        if (data.ContainsKey(id))");
             stringBuilder.AppendLine($"            return data[id];");

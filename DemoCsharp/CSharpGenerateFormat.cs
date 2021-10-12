@@ -16,7 +16,8 @@ namespace DemoCsharp
 
         public byte[] Format(TableDto tableDto, ValueParse parse, ref string fileName)
         {
-            fileName = fileName + ".bytes";
+            fileName = fileName + "Data.bytes";
+            fileName = fileName.Substring(0, 1).ToUpper() + fileName.Substring(1);
             MemoryStream stream = new MemoryStream();
             Binary = new BinaryWriter(stream);
             foreach (var row in tableDto.Rows)
