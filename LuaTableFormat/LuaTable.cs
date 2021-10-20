@@ -66,11 +66,14 @@ namespace LuaTableFormat
                 }
                 dataSb.AppendLine(str);
             }
-            string temp = dataSb.ToString();
-            int lastIndex = temp.LastIndexOf(",");
-            temp = temp.Remove(lastIndex, 1);
-            dataSb.Clear();
-            dataSb.Append(temp);
+            if (tableDto.Rows.Count > 0)
+            {
+                string temp = dataSb.ToString();
+                int lastIndex = temp.LastIndexOf(",");
+                temp = temp.Remove(lastIndex, 1);
+                dataSb.Clear();
+                dataSb.Append(temp);
+            }
             dataSb.AppendLine("}");
             sb.AppendLine($"config.Length = {tableDto.Rows.Count}");
             sb.AppendLine(dataSb.ToString());
