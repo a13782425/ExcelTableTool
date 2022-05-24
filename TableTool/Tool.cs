@@ -88,6 +88,11 @@ namespace TableTool
                     {
                         tableDto.TableSheetName = item.TableName;
                     }
+                    if (!string.IsNullOrWhiteSpace(Params[CONSOLE_HUMP]))
+                    {
+                        //如果需要驼峰
+                        tableDto.TableSheetName = TranHump(tableDto.TableSheetName);
+                    }
                     tableDto.DataFileName = tableDto.TableSheetName;
                     IRow nextRow = item.GetNextRow();
                     IRow nextRow2 = item.GetNextRow();
