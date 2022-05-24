@@ -58,7 +58,7 @@ namespace TableTool
                         for (int i = 0; i < xSSFWorkbook.Count; i++)
                         {
                             ISheet sheet = xSSFWorkbook.GetSheetAt(i);
-                            if (int.TryParse(sheet.SheetName, out int num))
+                            if (isRemark(sheet.SheetName))
                             {
                                 continue;
                             }
@@ -81,7 +81,40 @@ namespace TableTool
             }
             throw new Exception(path + "  不存在");
         }
+        /// <summary>
+        /// 判断一个sheet名是否是注释 
+        /// </summary>
+        /// <returns></returns>
+        private static bool isRemark(string sheetName)
+        {
+            if (string.IsNullOrWhiteSpace(sheetName))
+            {
+                //如果sheet名是空则是注释
+                return true;
+            }
+            if (int.TryParse(sheetName, out int num1))
+            {
+                //如果全是数字则是注释
+                return true;
+            }
+            if (int.TryParse(sheetName[0].ToString(), out int num2))
+            {
+                //如果首字母是数字则是注释
+                return true;
+            }
 
+            foreach (var item in sheetName)
+            {
+                if (isChinese(item))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+
+            bool isChinese(char ch) => ch >= 127;
+        }
         private ExcelHelper(ISheet sheet, string sheetName)
         {
             _excelSheet = sheet;
