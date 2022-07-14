@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Threading;
 using System.Transactions;
 using TableCore;
-using static TableTool.GlobalConst;
+using static TableCore.GlobalConst;
 
 namespace TableTool
 {

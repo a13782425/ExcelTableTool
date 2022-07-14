@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using TableCore;
-using static TableTool.GlobalConst;
+using static TableCore.GlobalConst;
 
 namespace TableTool
 {
@@ -124,7 +124,7 @@ namespace TableTool
                                         Console.ForegroundColor = ConsoleColor.White;
                                         return false;
                                     }
-                                    if (!string.IsNullOrWhiteSpace(Params[CONSOLE_HUMP]))
+                                    if (!string.IsNullOrWhiteSpace(Params[CONSOLE_HUMP]) || Params[CONSOLE_HUMP] == "1")
                                     {
                                         //如果需要驼峰
                                         dto.PropertyName = TranHump(dto.PropertyName);
@@ -187,7 +187,7 @@ namespace TableTool
                     num++;
                     if (row == null)
                     {
-                        Console.WriteLine($"{tableDto.ExcelFileName}表中{ tableDto.TableSheetName}页签,第{excel.Index}行为空");
+                        Console.WriteLine($"{tableDto.ExcelFileName}表中{tableDto.TableSheetName}页签,第{excel.Index}行为空");
                     }
                     else
                     {
@@ -198,13 +198,13 @@ namespace TableTool
                         if (row.GetCell(1) == null)
                         {
                             //break;
-                            throw new Exception($"{tableDto.ExcelFileName}表中{ tableDto.TableSheetName}页签,第{excel.Index}行Id为空");
+                            throw new Exception($"{tableDto.ExcelFileName}表中{tableDto.TableSheetName}页签,第{excel.Index}行Id为空");
                         }
                         string text = ExcelHelper.GetCellValue(row.GetCell(1));
                         if (string.IsNullOrWhiteSpace(text))
                         {
                             //break;
-                            throw new Exception($"{tableDto.ExcelFileName}表中{ tableDto.TableSheetName}页签,第:{excel.Index}行Id为空");
+                            throw new Exception($"{tableDto.ExcelFileName}表中{tableDto.TableSheetName}页签,第:{excel.Index}行Id为空");
                         }
                         if (!keyList.Contains(text))
                         {
@@ -212,7 +212,7 @@ namespace TableTool
                         }
                         else
                         {
-                            throw new Exception($"{tableDto.ExcelFileName}表中{ tableDto.TableSheetName}页签中Id:{text}存在多个");
+                            throw new Exception($"{tableDto.ExcelFileName}表中{tableDto.TableSheetName}页签中Id:{text}存在多个");
                         }
                         RowDataDto rowData = new RowDataDto(excel.Index);
                         rowData.Id = text;

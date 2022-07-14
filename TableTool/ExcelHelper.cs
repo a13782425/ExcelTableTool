@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using static TableTool.GlobalConst;
+using static TableCore.GlobalConst;
 
 namespace TableTool
 {
