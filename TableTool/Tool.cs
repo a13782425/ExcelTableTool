@@ -88,7 +88,8 @@ namespace TableTool
                     {
                         tableDto.TableSheetName = item.TableName;
                     }
-                    if (!string.IsNullOrWhiteSpace(Params[CONSOLE_HUMP]))
+                    tableDto.OriginSheetName = tableDto.TableSheetName;
+                    if (Params[CONSOLE_HUMP] == "1")
                     {
                         //如果需要驼峰
                         tableDto.TableSheetName = TranHump(tableDto.TableSheetName);
@@ -117,6 +118,7 @@ namespace TableTool
                                     dto.RealIndex = num;
                                     dto.Des = des.Replace("\n", " ");
                                     dto.PropertyName = nextRow4.GetCell(i).ToString();
+                                    dto.OriginName = dto.PropertyName;
                                     if (string.IsNullOrWhiteSpace(dto.PropertyName))
                                     {
                                         Console.ForegroundColor = ConsoleColor.Red;
@@ -124,7 +126,14 @@ namespace TableTool
                                         Console.ForegroundColor = ConsoleColor.White;
                                         return false;
                                     }
-                                    if (!string.IsNullOrWhiteSpace(Params[CONSOLE_HUMP]) || Params[CONSOLE_HUMP] == "1")
+                                    if (dto.PropertyName.IndexOf(' ') > 0)
+                                    {
+                                        Console.ForegroundColor = ConsoleColor.Red;
+                                        Console.WriteLine($"表格{xls.FileName}中的{item.TableName}第{i}列附近字段名中有空格");
+                                        Console.ForegroundColor = ConsoleColor.White;
+                                        return false;
+                                    }
+                                    if (Params[CONSOLE_HUMP] == "1")
                                     {
                                         //如果需要驼峰
                                         dto.PropertyName = TranHump(dto.PropertyName);

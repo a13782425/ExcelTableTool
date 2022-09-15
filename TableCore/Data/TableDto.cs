@@ -14,7 +14,11 @@ namespace TableCore
             Rows = new List<RowDataDto>();
         }
         /// <summary>
-        /// 表名(sheet)
+        /// 表原名
+        /// </summary>
+        public string OriginSheetName { get; set; }
+        /// <summary>
+        /// 表名(sheet)处理后的
         /// </summary>
         public string TableSheetName { get; set; }
         /// <summary>

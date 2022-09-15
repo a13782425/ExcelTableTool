@@ -16,11 +16,11 @@ namespace LuaTableFormat
             sb.AppendLine("------------------------------------------------------------------------------------------------------------");
             sb.AppendLine($"-------------------------------------------- generate file -------------------------------------------------");
             sb.AppendLine("------------------------------------------------------------------------------------------------------------");
-            sb.AppendLine($"---@class { "table_" + tableDto.TableSheetName}");
+            sb.AppendLine($"---@class {"table_" + tableDto.TableSheetName}");
             foreach (KeyValuePair<string, PropertyDto> item in tableDto.PropertyDic)
             {
                 PropertyDto propertyDto = item.Value;
-                sb.AppendLine($"---@field public {propertyDto.PropertyName} {propertyDto.PropertyType} @{propertyDto.Des}");
+                sb.AppendLine($"---@field public {propertyDto.PropertyName.ToHump()} {propertyDto.PropertyType} @{propertyDto.Des}");
 
             }
             sb.AppendLine("local config = {}");
@@ -32,12 +32,12 @@ namespace LuaTableFormat
                 if (i != tempList.Count - 1)
                 {
                     sb.AppendLine($"    --- {propertyDto.Des},");
-                    sb.AppendLine($"    {propertyDto.PropertyName } = {propertyDto.RealIndex},");
+                    sb.AppendLine($"    {propertyDto.PropertyName.ToHump()} = {propertyDto.RealIndex},");
                 }
                 else
                 {
                     sb.AppendLine($"    --- {propertyDto.Des},");
-                    sb.AppendLine($"    { propertyDto.PropertyName } = {propertyDto.RealIndex}");
+                    sb.AppendLine($"    {propertyDto.PropertyName.ToHump()} = {propertyDto.RealIndex}");
                 }
             }
             sb.AppendLine("}");
@@ -100,9 +100,17 @@ namespace LuaTableFormat
                 case "string":
                     return $"\"{res}\"";
                 case string s when (s.StartsWith("array")):
-                    string str = parse.ToJson(res);
-                    str = str.Replace("[", "{");
-                    str = str.Replace("]", "}");
+                    string str = "";
+                    if (res == null)
+                    {
+                        str = "{}";
+                    }
+                    else
+                    {
+                        str = parse.ToJson(res);
+                        str = str.Replace("[", "{");
+                        str = str.Replace("]", "}");
+                    }
                     //string str = "{";
                     //Array array = res as Array;
                     //string ty = text.Split(new char[] { '_' }, StringSplitOptions.RemoveEmptyEntries)[1];

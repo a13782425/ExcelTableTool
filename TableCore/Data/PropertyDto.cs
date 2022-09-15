@@ -11,6 +11,7 @@ namespace TableCore
 
         public PropertyDto()
         {
+            OriginName = "";
             PropertyName = "";
             //HumpName = "";
             PropertyType = "";
@@ -20,7 +21,11 @@ namespace TableCore
             //IsEnum = false;
         }
         /// <summary>
-        /// 转化前名字
+        /// 原名
+        /// </summary>
+        public string OriginName { get; set; }
+        /// <summary>
+        /// 转化后名字
         /// </summary>
         public string PropertyName { get; set; }
         ///// <summary>
