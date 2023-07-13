@@ -1,0 +1,51 @@
+﻿using System;
+using System.IO;
+using UnityEngine;
+
+
+public interface ITable { }
+
+public abstract class TableBase<T> : ITable where T : TableBase<T>, new()
+{
+    public static void Initialize(string filePath)
+    {
+        byte[] buffer = Resources.Load<TextAsset>(filePath).bytes;
+        byte[] fileBuffer = new byte[buffer.Length - 1];
+        byte temp = buffer[0];
+        for (int i = 0; i < fileBuffer.Length; i++)
+        {
+            fileBuffer[i] = (byte)(buffer[i + 1] ^ temp);
+        }
+        //如果数据为加密,buffer为加密后的数据
+        MemoryStream memoryStream = new MemoryStream(fileBuffer);
+        BinaryReader binaryReader = new BinaryReader(memoryStream);
+        while (memoryStream.Position < memoryStream.Length)
+        {
+            try
+            {
+                T t2 = Activator.CreateInstance<T>();
+                t2.Parse(binaryReader);
+                t2.Init();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("Element error file : " + filePath);
+                throw ex;
+            }
+        }
+        binaryReader.Close();
+        memoryStream.Close();
+        memoryStream.Dispose();
+    }
+    /// <summary>
+    /// 解析二进制数据
+    /// </summary>
+    protected abstract int Parse(BinaryReader bReader);
+    /// <summary>
+    /// 解析完毕进行二次操作
+    /// </summary>
+    public virtual void Init()
+    {
+    }
+
+}

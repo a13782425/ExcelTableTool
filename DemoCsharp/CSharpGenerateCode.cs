@@ -27,10 +27,11 @@ namespace DemoCsharp
             stringBuilder.AppendLine($"using System.Collections.Generic;");
             stringBuilder.AppendLine($"using System.Linq;");
             stringBuilder.AppendLine($"using System.IO;");
+            stringBuilder.AppendLine($"using Game;");
             stringBuilder.AppendLine();
             stringBuilder.AppendLine($"public partial class {className } : TableBase<{className }>");
             stringBuilder.AppendLine($"{{");
-            //stringBuilder.AppendLine($"    public readonly Dictionary<int, {className}> data = new Dictionary<int, {className}>();");
+            stringBuilder.AppendLine($"    public static readonly Dictionary<int, {className}> Datas = new Dictionary<int, {className}>();");
             foreach (var item in tableDto.PropertyDic)
             {
                 PropertyDto property = item.Value;
@@ -57,7 +58,7 @@ namespace DemoCsharp
             stringBuilder.AppendLine($"        return null;");
             stringBuilder.AppendLine($"    }}");
             stringBuilder.AppendLine();
-            stringBuilder.AppendLine($"    public override int Parse(BinaryReader bReader)");
+            stringBuilder.AppendLine($"    protected override int Parse(BinaryReader bReader)");
             stringBuilder.AppendLine($"    {{");
             foreach (var item in tableDto.PropertyDic)
             {
