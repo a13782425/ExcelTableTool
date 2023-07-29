@@ -31,7 +31,7 @@ namespace DemoCsharp
             stringBuilder.AppendLine();
             stringBuilder.AppendLine($"public partial class {className } : TableBase<{className }>");
             stringBuilder.AppendLine($"{{");
-            stringBuilder.AppendLine($"    public static readonly Dictionary<int, {className}> Datas = new Dictionary<int, {className}>();");
+            //stringBuilder.AppendLine($"    public static readonly Dictionary<int, {className}> Datas = new Dictionary<int, {className}>();");
             foreach (var item in tableDto.PropertyDic)
             {
                 PropertyDto property = item.Value;
@@ -41,23 +41,23 @@ namespace DemoCsharp
                 stringBuilder.AppendLine($"    public { GetType(property.PropertyType)} {property.PropertyName } {{ get; private set; }}");
             }
             stringBuilder.AppendLine();
-            stringBuilder.AppendLine($"    public static IEnumerable<{className}> GetList(Func<{className}, bool> predicate)");
-            stringBuilder.AppendLine($"    {{");
-            stringBuilder.AppendLine($"        return Datas.Values.Where(predicate);");
-            stringBuilder.AppendLine($"    }}");
-            stringBuilder.AppendLine();
-            stringBuilder.AppendLine($"    public static {className} Get(Func<{className}, bool> predicate)");
-            stringBuilder.AppendLine($"    {{");
-            stringBuilder.AppendLine($"        return Datas.Values.FirstOrDefault(predicate);");
-            stringBuilder.AppendLine($"    }}");
-            stringBuilder.AppendLine();
-            stringBuilder.AppendLine($"    public static {className} Get(int id)");
-            stringBuilder.AppendLine($"    {{");
-            stringBuilder.AppendLine($"        if (Datas.ContainsKey(id))");
-            stringBuilder.AppendLine($"            return Datas[id];");
-            stringBuilder.AppendLine($"        return null;");
-            stringBuilder.AppendLine($"    }}");
-            stringBuilder.AppendLine();
+            //stringBuilder.AppendLine($"    public static IEnumerable<{className}> GetList(Func<{className}, bool> predicate)");
+            //stringBuilder.AppendLine($"    {{");
+            //stringBuilder.AppendLine($"        return Datas.Values.Where(predicate);");
+            //stringBuilder.AppendLine($"    }}");
+            //stringBuilder.AppendLine();
+            //stringBuilder.AppendLine($"    public static {className} Get(Func<{className}, bool> predicate)");
+            //stringBuilder.AppendLine($"    {{");
+            //stringBuilder.AppendLine($"        return Datas.Values.FirstOrDefault(predicate);");
+            //stringBuilder.AppendLine($"    }}");
+            //stringBuilder.AppendLine();
+            //stringBuilder.AppendLine($"    public static {className} Get(int id)");
+            //stringBuilder.AppendLine($"    {{");
+            //stringBuilder.AppendLine($"        if (Datas.ContainsKey(id))");
+            //stringBuilder.AppendLine($"            return Datas[id];");
+            //stringBuilder.AppendLine($"        return null;");
+            //stringBuilder.AppendLine($"    }}");
+            //stringBuilder.AppendLine();
             stringBuilder.AppendLine($"    protected override int Parse(BinaryReader bReader)");
             stringBuilder.AppendLine($"    {{");
             foreach (var item in tableDto.PropertyDic)
