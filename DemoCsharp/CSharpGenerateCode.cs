@@ -14,10 +14,10 @@ namespace DemoCsharp
         public string Generate(string package, TableDto tableDto, ref string fileName)
         {
 
-            fileName += "Table.gen.cs";
             fileName = fileName.Substring(0, 1).ToUpper() + fileName.Substring(1);
-            string className = tableDto.TableSheetName + "Table";
-            className = className.Substring(0, 1).ToUpper() + className.Substring(1);
+            fileName = $"Table_{fileName}.gen.cs";
+            string className = tableDto.TableSheetName;
+            className = "Table_" + (className.Substring(0, 1).ToUpper() + className.Substring(1));
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine($"/*");
             stringBuilder.AppendLine($"\t生成代码,禁止修改");
@@ -29,16 +29,16 @@ namespace DemoCsharp
             stringBuilder.AppendLine($"using System.IO;");
             stringBuilder.AppendLine($"using Game;");
             stringBuilder.AppendLine();
-            stringBuilder.AppendLine($"public partial class {className } : TableBase<{className }>");
+            stringBuilder.AppendLine($"public partial class {className} : TableBase<{className}>");
             stringBuilder.AppendLine($"{{");
             //stringBuilder.AppendLine($"    public static readonly Dictionary<int, {className}> Datas = new Dictionary<int, {className}>();");
             foreach (var item in tableDto.PropertyDic)
             {
                 PropertyDto property = item.Value;
                 stringBuilder.AppendLine($"    /// <summary>");
-                stringBuilder.AppendLine($"    /// { property.Des}");
+                stringBuilder.AppendLine($"    /// {property.Des}");
                 stringBuilder.AppendLine($"    /// </summary>");
-                stringBuilder.AppendLine($"    public { GetType(property.PropertyType)} {property.PropertyName } {{ get; private set; }}");
+                stringBuilder.AppendLine($"    public {GetType(property.PropertyType)} {property.PropertyName} {{ get; private set; }}");
             }
             stringBuilder.AppendLine();
             //stringBuilder.AppendLine($"    public static IEnumerable<{className}> GetList(Func<{className}, bool> predicate)");
@@ -65,10 +65,10 @@ namespace DemoCsharp
                 PropertyDto property = item.Value;
                 if (property.PropertyType.StartsWith("enum_"))
                 {
-                    stringBuilder.AppendLine($"        this.{ property.PropertyName } = ({ GetType(property.PropertyType) }){GetBinaryRead(property.PropertyType) };");
+                    stringBuilder.AppendLine($"        this.{property.PropertyName} = ({GetType(property.PropertyType)}){GetBinaryRead(property.PropertyType)};");
                     continue;
                 }
-                stringBuilder.AppendLine($"        this.{property.PropertyName} = {GetBinaryRead(property.PropertyType) };");
+                stringBuilder.AppendLine($"        this.{property.PropertyName} = {GetBinaryRead(property.PropertyType)};");
                 if (property.PropertyType.StartsWith("array_"))
                 {
 
@@ -76,12 +76,12 @@ namespace DemoCsharp
 
                     if (property.PropertyType.EndsWith("2"))
                     {
-                        stringBuilder.AppendLine($"        for (int i = 0; i < this.{ property.PropertyName }.Length; i++)");
+                        stringBuilder.AppendLine($"        for (int i = 0; i < this.{property.PropertyName}.Length; i++)");
                         stringBuilder.AppendLine($"        {{");
-                        stringBuilder.AppendLine($"            this.{ property.PropertyName }[i] = {GetBinaryRead("array_" + basicType)};");
-                        stringBuilder.AppendLine($"            for (int j = 0; j < this.{ property.PropertyName }[i].Length; j++)");
+                        stringBuilder.AppendLine($"            this.{property.PropertyName}[i] = {GetBinaryRead("array_" + basicType)};");
+                        stringBuilder.AppendLine($"            for (int j = 0; j < this.{property.PropertyName}[i].Length; j++)");
                         stringBuilder.AppendLine($"            {{");
-                        stringBuilder.AppendLine($"                this.{ property.PropertyName }[i][j] = {GetBinaryRead(basicType)};");
+                        stringBuilder.AppendLine($"                this.{property.PropertyName}[i][j] = {GetBinaryRead(basicType)};");
                         stringBuilder.AppendLine($"            }}");
                         stringBuilder.AppendLine($"        }}");
                     }
