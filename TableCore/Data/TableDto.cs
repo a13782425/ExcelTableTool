@@ -26,6 +26,8 @@ namespace TableCore
         /// </summary>
         public string DataFileName { get; set; }
 
+        public string Comments { get; set; }
+
         public Dictionary<string, PropertyDto> PropertyDic { get; private set; }
 
         public List<RowDataDto> Rows { get; private set; }

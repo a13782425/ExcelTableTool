@@ -79,6 +79,7 @@ namespace TableTool
                 foreach (var item in excelHelperList)
                 {
                     TableDto tableDto = new TableDto();
+                    tableDto.Comments = item.Comments;
                     tableDto.ExcelFileName = xls.FileName;
                     if (string.IsNullOrWhiteSpace(item.TableName))
                     {

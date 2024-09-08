@@ -29,6 +29,9 @@ namespace DemoCsharp
             stringBuilder.AppendLine($"using System.IO;");
             stringBuilder.AppendLine($"using Game;");
             stringBuilder.AppendLine();
+            stringBuilder.AppendLine("/// <summary>");
+            stringBuilder.AppendLine($"/// {tableDto.Comments}");
+            stringBuilder.AppendLine("/// </summary>");
             stringBuilder.AppendLine($"public partial class {className} : TableBase<{className}>");
             stringBuilder.AppendLine($"{{");
             //stringBuilder.AppendLine($"    public static readonly Dictionary<int, {className}> Datas = new Dictionary<int, {className}>();");

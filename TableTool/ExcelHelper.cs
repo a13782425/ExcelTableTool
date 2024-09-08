@@ -12,6 +12,11 @@ namespace TableTool
         private ISheet _excelSheet;
         private string _sheetName;
 
+        /// <summary>
+        /// 注释
+        /// </summary>
+        public string Comments { get; private set; }
+
         public string TableName => _sheetName;
         private int _index = 0;
 
@@ -58,11 +63,33 @@ namespace TableTool
                         for (int i = 0; i < xSSFWorkbook.Count; i++)
                         {
                             ISheet sheet = xSSFWorkbook.GetSheetAt(i);
-                            if (isRemark(sheet.SheetName))
+                            string sheetName = "";
+                            string comment = "";
+                            bool isComment = false;
+                            foreach (var item in sheet.SheetName)
+                            {
+                                if (!isComment)
+                                {
+                                    if (item == '#')
+                                    {
+                                        isComment = true;
+                                    }
+                                    else
+                                    {
+                                        sheetName += item;
+                                    }
+                                }
+                                else
+                                {
+                                    comment += item;
+                                }
+                            }
+                            if (isRemark(sheetName))
                             {
                                 continue;
                             }
-                            ExcelHelper exHelper = new ExcelHelper(sheet, sheet.SheetName);
+                            ExcelHelper exHelper = new ExcelHelper(sheet, sheetName);
+                            exHelper.Comments = comment;
                             list.Add(exHelper);
                         }
                     }
